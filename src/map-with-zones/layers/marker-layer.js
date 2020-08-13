@@ -35,7 +35,7 @@ export class MarkerLayer extends mapboxgl.Evented {
 
     getPopupContent() {
         return `
-        <div>
+        <div class='radius-popup'>
             <label for=${this.radiusInputId}>Enter radius</label>
             <input id=${this.radiusInputId} type='number'/>
         </div>

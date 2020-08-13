@@ -19,15 +19,13 @@ export class MapWithZones extends React.Component {
     componentDidMount() {
         const { mapStyle, mapToken, isAdmin } = this.props;
 
-        mapboxgl.accessToken = `${mapToken}`;
+        mapboxgl.accessToken = mapToken;
         const style = mapStyle || "mapbox://styles/mapbox/streets-v11";
 
         const map = new mapboxgl.Map({
             container: mapId,
             style,
         });
-
-        window.BIG_MAP = map;
 
         const userControll = new UserControll();
         const adminControll = new AdminControll();
