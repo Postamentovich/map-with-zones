@@ -1,14 +1,14 @@
 export class AdminControll {
     onAdd(map) {
-        this._map = map;
-        this._container = document.createElement("button");
-        this._container.className = "mapboxgl-ctrl";
-        this._container.textContent = "Admin";
-        return this._container;
+        this.map = map;
+        this.container = document.createElement("button");
+        this.container.className = "mapboxgl-ctrl";
+        this.container.textContent = "Admin";
+        return this.container;
     }
 
     onRemove() {
-        this._container.parentNode.removeChild(this._container);
-        this._map = undefined;
+        this.container.parentNode.removeChild(this.container);
+        this.map = undefined;
     }
 }

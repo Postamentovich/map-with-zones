@@ -2,7 +2,7 @@ import React from "react";
 import mapboxgl from "mapbox-gl";
 import { UserControll } from "./controls/user-controll";
 import { AdminControll } from "./controls/admin-controll";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 import "./index.scss";
 
 const mapId = "mapbox-container-element-id";
@@ -18,17 +18,20 @@ const mapId = "mapbox-container-element-id";
 export class MapWithZones extends React.Component {
     componentDidMount() {
         const { mapStyle, mapToken, isAdmin } = this.props;
-        if (!mapToken) {
-            console.error("Please provide mapbox token, in mapToken prop");
-        }
+
         mapboxgl.accessToken = `${mapToken}`;
         const style = mapStyle || "mapbox://styles/mapbox/streets-v11";
+
         const map = new mapboxgl.Map({
             container: mapId,
             style,
         });
+
+        window.BIG_MAP = map;
+
         const userControll = new UserControll();
         const adminControll = new AdminControll();
+
         if (isAdmin) {
             map.addControl(adminControll);
         } else {
