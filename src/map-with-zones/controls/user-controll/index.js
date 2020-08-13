@@ -1,4 +1,5 @@
 import { MarkerLayer, MarkerLayerEvents } from "../../layers/marker-layer";
+import { RadiusLayer } from "../../layers/radius-layer";
 
 export class UserControll {
     data = {
@@ -23,18 +24,26 @@ export class UserControll {
 
     init() {
         this.markerLayer = new MarkerLayer(this.map);
-        this.markerLayer.on(MarkerLayerEvents.dragend, this.handleDragEndMarker);
-        this.map.once("click", this.handleMapClick);
+        this.radiusLayer = new RadiusLayer(this.map);
+        this.markerLayer.on(MarkerLayerEvents.dragend, this.onDragEndMarker);
+        this.markerLayer.on(MarkerLayerEvents.radiusChanged, this.onRadiusChanged);
+        this.map.once("click", this.onMapClick);
     }
 
-    handleDragEndMarker = ({ lngLat }) => {
+    onRadiusChanged = ({ radius }) => {
+        this.data.radius = radius;
+        this.radiusLayer.update(this.data.radius, this.data.lngLat);
+    };
+
+    onDragEndMarker = ({ lngLat }) => {
         this.data.lngLat = lngLat;
+        this.radiusLayer.update(this.data.radius, this.data.lngLat);
     };
 
     /**
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
      */
-    handleMapClick = (e) => {
+    onMapClick = (e) => {
         this.markerLayer.update(e.lngLat);
         this.data.lngLat = e.lngLat;
     };
