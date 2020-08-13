@@ -1,9 +1,11 @@
 import { MarkerLayer, MarkerLayerEvents } from "../../layers/marker-layer";
 
 export class UserControll {
-    constructor() {
-        this.handleMapClick = this.handleMapClick.bind(this);
-    }
+    data = {
+        lngLat: null,
+        radius: null,
+        zones: [],
+    };
 
     onAdd(map) {
         /** @type{mapboxgl.Map} */
@@ -20,20 +22,20 @@ export class UserControll {
     }
 
     init() {
-        // this.addImagesToMap();
         this.markerLayer = new MarkerLayer(this.map);
-        this.markerLayer.on(MarkerLayerEvents.dragend, ({ lngLat }) => {
-            console.log(lngLat);
-        });
-        this.map.on("click", this.handleMapClick);
+        this.markerLayer.on(MarkerLayerEvents.dragend, this.handleDragEndMarker);
+        this.map.once("click", this.handleMapClick);
     }
 
+    handleDragEndMarker = ({ lngLat }) => {
+        this.data.lngLat = lngLat;
+    };
+
     /**
-     *
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
      */
-    handleMapClick(e) {
+    handleMapClick = (e) => {
         this.markerLayer.update(e.lngLat);
-        console.log(e.lngLat);
-    }
+        this.data.lngLat = e.lngLat;
+    };
 }

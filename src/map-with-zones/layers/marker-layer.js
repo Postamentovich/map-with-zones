@@ -7,7 +7,6 @@ export const MarkerLayerEvents = {
 export class MarkerLayer extends mapboxgl.Evented {
     constructor(map) {
         super();
-        this.isAdded = false;
         /** @type{mapboxgl.Map} */
         this.map = map;
         /** @type{mapboxgl.Marker} */
@@ -20,8 +19,6 @@ export class MarkerLayer extends mapboxgl.Evented {
      * @param {mapboxgl.LngLat} coor
      */
     update(coor) {
-        if (this.isAdded) return;
-        this.isAdded = true;
         this.marker.setLngLat(coor.toArray()).addTo(this.map);
         this.marker.on("dragend", this.onDragEnd);
     }
