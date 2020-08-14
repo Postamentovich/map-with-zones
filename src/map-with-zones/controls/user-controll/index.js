@@ -8,8 +8,11 @@ export class UserControll {
         zones: [],
     };
 
+    /**
+     *
+     * @param {mapboxgl.Map} map
+     */
     onAdd(map) {
-        /** @type{mapboxgl.Map} */
         this.map = map;
         this.container = document.createElement("div");
         this.container.className = "mapboxgl-ctrl";
@@ -32,13 +35,17 @@ export class UserControll {
 
     onRadiusChanged = ({ radius }) => {
         this.data.radius = radius;
-        this.radiusLayer.update(this.data.radius, this.data.lngLat);
+        this.updateRadiusLayer();
     };
 
     onDragEndMarker = ({ lngLat }) => {
         this.data.lngLat = lngLat;
-        this.radiusLayer.update(this.data.radius, this.data.lngLat);
+        this.updateRadiusLayer();
     };
+
+    updateRadiusLayer() {
+        this.radiusLayer.update(this.data.radius, this.data.lngLat);
+    }
 
     /**
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e

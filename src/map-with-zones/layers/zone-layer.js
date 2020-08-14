@@ -1,3 +1,4 @@
+import * as turf from "@turf/turf";
 export class ZoneLayer {
     /**
      * @param {mapboxgl.Map} map
@@ -14,13 +15,9 @@ export class ZoneLayer {
      * @param {number} radius
      * @param {mapboxgl.LngLat} coor
      */
-    update(radius, coor) {
-        if (radius > 0) {
-            this.addSource(radius, coor);
-            this.addLayer();
-        } else {
-            this.removeLayer();
-        }
+    update(coordinates) {
+        this.addSource(coordinates);
+        this.addLayer();
     }
 
     /**
@@ -28,19 +25,25 @@ export class ZoneLayer {
      * @param {number} radius
      * @param {mapboxgl.LngLat} coor
      */
-    addSource(radius, coor) {
-        // const source = this.getSource();
-        // const circle = turf.circle(coor.toArray(), radius);
-        // const data = turf.featureCollection([circle]);
-        // if (source) {
-        //     source.setData(data);
-        // } else {
-        //     this.map.addSource(this.sourceId, { type: "geojson", data });
-        // }
+    addSource(coordinates) {
+        const source = this.getSource();
+        const line = turf.lineString(coordinates);
+        const simlified = turf.simplify(line, { tolerance: 0.00001 });
+
+        if (simlified.geometry.coordinates.length < 4) return;
+
+        const polygon = turf.lineToPolygon(simlified);
+        const data = turf.featureCollection([polygon]);
+
+        if (source) {
+            source.setData(data);
+        } else {
+            this.map.addSource(this.sourceId, { type: "geojson", data });
+        }
     }
 
     addLayer() {
-        if (this.gerLayer()) return;
+        if (this.gerLayer() || !this.getSource()) return;
 
         this.map.addLayer({
             id: this.layerId,
