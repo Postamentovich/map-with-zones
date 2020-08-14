@@ -8,8 +8,8 @@ export class ZoneLayer {
     constructor(map, id, options) {
         const color = (options && options.color) || "#088";
         this.map = map;
-        this.layerId = `zone-${id}-layer`;
-        this.sourceId = `zone-${id}-source`;
+        this.layerId = `zone-layer-${id}`;
+        this.sourceId = `zone-source-${id}`;
         this.id = id;
         this.color = color;
     }
@@ -55,12 +55,12 @@ export class ZoneLayer {
             paint: {
                 "fill-color": this.color,
                 "fill-opacity": 0.5,
-                "fill-outline-color": 'transparent',
+                "fill-outline-color": "transparent",
             },
         });
     }
 
-    removeLayer() {
+    remove() {
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
     }
