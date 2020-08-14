@@ -1,45 +1,33 @@
-import { getZonePolygonByCoordinates } from "../utils/zone-helpers";
 import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
-import { ZoneStrokeLayer } from "./zone-stroke-layer";
+import { getZoneLineByCoordinates } from "../utils/zone-helpers";
 
-export class ZoneLayer {
+export class ZoneStrokeLayer {
     /**
+     *
      * @param {mapboxgl.Map} map
      * @param {string} id
      */
     constructor(map, id, options) {
         const color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
         this.map = map;
-        this.layerId = `zone-layer-${id}`;
-        this.sourceId = `zone-source-${id}`;
+        this.layerId = `zone-stroke-layer-${id}`;
+        this.sourceId = `zone-stroke-source-${id}`;
         this.id = id;
         this.color = color;
-        this.strokeLayer = new ZoneStrokeLayer(map, id, options);
     }
 
-    /**
-     *
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     update(coordinates) {
         this.addSource(coordinates);
         this.addLayer();
-        this.strokeLayer.update(coordinates);
     }
 
     setColor(color) {
         this.color = color;
-        this.map.setPaintProperty(this.layerId, "fill-color", color);
-        this.strokeLayer.setColor(color);
+        this.map.setPaintProperty(this.layerId, "line-color", color);
     }
 
-    /**
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     addSource(coordinates) {
-        const data = getZonePolygonByCoordinates(coordinates, this.id);
+        const data = getZoneLineByCoordinates(coordinates, this.id);
         if (!data) return;
 
         const source = this.getSource();
@@ -56,12 +44,14 @@ export class ZoneLayer {
         this.map.addLayer({
             id: this.layerId,
             source: this.sourceId,
-            type: "fill",
-            layout: {},
+            type: "line",
+            layout: {
+                "line-join": "round",
+                "line-cap": "round",
+            },
             paint: {
-                "fill-color": this.color,
-                "fill-opacity": 0.5,
-                "fill-outline-color": "transparent",
+                "line-color": this.color,
+                "line-width": 8,
             },
         });
     }
@@ -69,7 +59,6 @@ export class ZoneLayer {
     remove() {
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
-        this.strokeLayer.remove();
     }
 
     getSource() {

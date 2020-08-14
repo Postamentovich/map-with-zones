@@ -23,11 +23,19 @@ export function getCenterZoneByCoordinates(coordinates) {
     return coor;
 }
 
-export function getDataByCoordinates(coordinates, id) {
+export function getZonePolygonByCoordinates(coordinates, id) {
+    const line = getZoneLineByCoordinates(coordinates, id);
+    if (!line || line.geometry.coordinates.length < 4) return;
+    const polygon = turf.lineToPolygon(line);
+    const data = turf.featureCollection([polygon]);
+    return data;
+}
+
+export function getZoneLineByCoordinates(coordinates, id) {
     const line = turf.lineString(coordinates, { id });
     const simlified = turf.simplify(line, { tolerance: 0.00001 });
     if (simlified.geometry.coordinates.length < 4) return;
     const polygon = turf.lineToPolygon(simlified);
-    const data = turf.featureCollection([polygon]);
-    return data;
+    const polygonedLine = turf.polygonToLine(polygon);
+    return polygonedLine;
 }
