@@ -20,3 +20,11 @@
         }
     }
 }
+
+.mapboxgl-popup-content {
+    .admin-controll {
+        &__popup {
+            width: 200px;
+        }
+    }
+}

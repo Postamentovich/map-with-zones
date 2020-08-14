@@ -1,4 +1,5 @@
 export function disableMapInteraction(map) {
+    if (!map) return;
     map.dragPan.disable();
     map.boxZoom.disable();
     map.scrollZoom.disable();

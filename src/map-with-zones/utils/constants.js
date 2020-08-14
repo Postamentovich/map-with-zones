@@ -1,0 +1,1 @@
+export const DEFAULT_ZONE_LAYER_COLOR = "#008888";

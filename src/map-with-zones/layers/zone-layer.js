@@ -1,4 +1,5 @@
 import { getDataByCoordinates } from "../utils/get-data-by-coordinates";
+import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
 
 export class ZoneLayer {
     /**
@@ -6,7 +7,7 @@ export class ZoneLayer {
      * @param {string} id
      */
     constructor(map, id, options) {
-        const color = (options && options.color) || "#088";
+        const color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
         this.map = map;
         this.layerId = `zone-layer-${id}`;
         this.sourceId = `zone-source-${id}`;

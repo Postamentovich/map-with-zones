@@ -1,4 +1,5 @@
 export function enableMapInteraction(map) {
+    if (!map) return;
     map.dragPan.enable();
     map.boxZoom.enable();
     map.scrollZoom.enable();
