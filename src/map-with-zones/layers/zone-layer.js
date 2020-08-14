@@ -1,4 +1,4 @@
-import { getDataByCoordinates } from "../utils/get-data-by-coordinates";
+import { getDataByCoordinates } from "../utils/zone-helpers";
 import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
 
 export class ZoneLayer {

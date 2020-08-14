@@ -4,6 +4,36 @@
     bottom: 0;
     width: 100%;
 }
+
 .mapboxgl-ctrl-attrib-inner {
     display: none;
+}
+
+.mapboxgl-ctrl-group {
+    .map-controll {
+        &__button {
+            padding: 5px;
+            width: 40px;
+            height: 40px;
+            outline: none;
+
+            &_active {
+                background-color: #1eb056 !important;
+
+                & > svg {
+                    fill: white;
+                }
+            }
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+.mapboxgl-popup-content {
+    .map-popup {
+        width: 200px;
+    }
 }

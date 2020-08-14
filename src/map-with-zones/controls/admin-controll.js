@@ -1,13 +1,10 @@
 import mapboxgl from "mapbox-gl";
 import _ from "lodash";
-import { ZoneLayer } from "../../layers/zone-layer";
-import { generateUniqueId } from "../../utils/generate-unique-id";
-import { getPlusIconSvg } from "../../utils/get-plus-icon-svg";
-import { getDeleteIconSvg } from "../../utils/get-delete-icon-svg";
-import { getEditIconSvg } from "../../utils/get-edit-icon-svg";
-import { enableMapInteraction, disableMapInteraction } from "../../utils/map-helpers";
-import { getCenterZoneByCoordinates } from "../../utils/get-center-zone-by-coordinates";
-import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME } from "../../utils/constants";
+import { ZoneLayer } from "../layers/zone-layer";
+import { generateUniqueId, getDefaultZone, getCenterZoneByCoordinates } from "../utils/zone-helpers";
+import { getPlusIconSvg, getEditIconSvg, getDeleteIconSvg } from "../utils/svg-helpers";
+import { enableMapInteraction, disableMapInteraction } from "../utils/map-helpers";
+import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME } from "../utils/constants";
 import {
     createControllButton,
     removeActiveClassForButton,
@@ -17,9 +14,7 @@ import {
     getPopupButton,
     getPopupTitle,
     getPopupInputName,
-} from "../../utils/dom-helpers";
-import "./index.scss";
-import { getDefaultZone } from "../../utils/controls-helpers";
+} from "../utils/dom-helpers";
 
 export class AdminControll {
     zones = [];

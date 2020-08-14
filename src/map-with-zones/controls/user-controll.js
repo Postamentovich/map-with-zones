@@ -1,5 +1,5 @@
-import { MarkerLayer, MarkerLayerEvents } from "../../layers/marker-layer";
-import { RadiusLayer } from "../../layers/radius-layer";
+import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
+import { RadiusLayer } from "../layers/radius-layer";
 
 export class UserControll {
     data = {
