@@ -34,6 +34,51 @@
 
 .mapboxgl-popup-content {
     .map-popup {
-        width: 200px;
+        width: 220px;
+
+        & > * {
+            box-sizing: border-box;
+        }
+
+        &__button {
+            padding: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        &__input {
+            margin-top: 5px;
+            width: 100%;
+            padding: 5px;
+        }
+
+        &__label {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        &__title {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        &__controls {
+            display: flex;
+            padding-top: 5px;
+
+            & > button:not(:last-child) {
+                margin-right: 10px;
+            }
+        }
+
+        &__color {
+            display: flex;
+            margin: 10px 0;
+            align-items: center;
+
+            & > input {
+                margin-left: 15px;
+            }
+        }
     }
 }

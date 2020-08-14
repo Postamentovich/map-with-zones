@@ -9,3 +9,5 @@ export const POPUP_BUTTON_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__button`;
 export const POPUP_INPUT_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__input`;
 export const POPUP_LABEL_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__label`;
 export const POPUP_TITLE_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__title`;
+export const POPUP_COLOR_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__color`;
+export const POPUP_CONTROLS_CLASS_NAME = `${POPUP_BASE_CLASS_NAME}__controls`;

@@ -4,7 +4,7 @@ import { ZoneLayer } from "../layers/zone-layer";
 import { generateUniqueId, getDefaultZone, getCenterZoneByCoordinates } from "../utils/zone-helpers";
 import { getPlusIconSvg, getEditIconSvg, getDeleteIconSvg } from "../utils/svg-helpers";
 import { enableMapInteraction, disableMapInteraction } from "../utils/map-helpers";
-import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME } from "../utils/constants";
+import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
 import {
     createControllButton,
     removeActiveClassForButton,
@@ -86,7 +86,7 @@ export class AdminControll {
     }
 
     updateEditZoneLayer() {
-        if (this.editZone.coordinates.length < 4) return;
+        if (!this.editZone || this.editZone.coordinates.length < 4) return;
         const layer = this.layers.get(this.editZone.id);
         if (!layer) return;
         layer.update(this.editZone.coordinates);
@@ -97,8 +97,8 @@ export class AdminControll {
      */
     onMouseUpEdit = (e) => {
         this.map.off("mousemove", this.onMouseMoveEdit);
+        if (this.editZone) this.showEditPopup(this.editZone.id);
         enableMapInteraction(this.map);
-        this.showEditPopup(this.editZone.id);
     };
 
     /**
@@ -128,7 +128,6 @@ export class AdminControll {
     };
 
     cancelEditZone = () => {
-        if (!this.editZone) return;
         const layer = this.layers.get(this.editZone.id);
         const zone = this.zones.find((el) => el.id === this.editZone.id);
         if (layer) {
@@ -162,12 +161,14 @@ export class AdminControll {
 
     getEditPopupContent({ name, color }) {
         return `
-            <div class=${POPUP_BASE_CLASS_NAME}>
+            <div class="${POPUP_BASE_CLASS_NAME}">
                 ${getPopupInputName(name, this.popupEditInputNameId)}
                 ${getPopupInputColor(color, this.popupEditInputColorId)}
-                ${getPopupButton("Save", this.popupEditButtonSaveId)}
-                ${getPopupButton("Cancel", this.popupEditButtonCancelId)}
                 ${getPopupButton("Edit Geometry", this.popupEditButtonGeometryId)}
+                <div class="${POPUP_CONTROLS_CLASS_NAME}">
+                ${getPopupButton("Cancel", this.popupEditButtonCancelId)}
+                ${getPopupButton("Save", this.popupEditButtonSaveId)}
+                </div>
             </div>`;
     }
 
@@ -192,6 +193,7 @@ export class AdminControll {
         if (this.editZone && zoneId === this.editZone.id) return;
         if (this.editPopup) this.editPopup.remove();
         const zone = this.zones.find((el) => el.id === zoneId);
+        if (!zone) return;
         this.editZone = _.cloneDeep(zone);
         this.showEditPopup();
     };
@@ -297,8 +299,10 @@ export class AdminControll {
             <div class=${POPUP_BASE_CLASS_NAME}>
                 ${getPopupInputName(name, this.popupCreateInputNameId)}
                 ${getPopupInputColor(null, this.popupCreateInputColorId)}
-                ${getPopupButton("Save", this.popupCreateButtonSaveId)}
+                <div class="${POPUP_CONTROLS_CLASS_NAME}">
                 ${getPopupButton("Cancel", this.popupCreateButtonCancelId)}
+                ${getPopupButton("Save", this.popupCreateButtonSaveId)}
+                </div>
             </div>`;
     }
 
@@ -340,8 +344,10 @@ export class AdminControll {
         return `
             <div class=${POPUP_BASE_CLASS_NAME}>
                 ${getPopupTitle(`Do you want to delete a zone ${zoneName}?`)}
-                ${getPopupButton("Delete", this.popupDeleteButtonConfirmId)}
+                <div class="${POPUP_CONTROLS_CLASS_NAME}">
                 ${getPopupButton("Cancel", this.popupDeleteButtonCancelId)}
+                ${getPopupButton("Delete", this.popupDeleteButtonConfirmId)}
+                </div>
             </div>`;
     }
 

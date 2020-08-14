@@ -6,6 +6,7 @@ import {
     POPUP_BUTTON_CLASS_NAME,
     POPUP_TITLE_CLASS_NAME,
     POPUP_INPUT_CLASS_NAME,
+    POPUP_COLOR_CLASS_NAME,
 } from "./constants";
 
 export function createControllButton(content, callback) {
@@ -44,8 +45,11 @@ export function removeElementListener(id, event, callback) {
 
 export function getPopupInputColor(color, id) {
     return `
-        <label for="${id}" class="${POPUP_LABEL_CLASS_NAME}">Select zone color:</label></br>
-        <input type="color" id="${id}" value="${color || DEFAULT_ZONE_LAYER_COLOR}" /></br>`;
+        <div class="${POPUP_COLOR_CLASS_NAME}">
+            <label for="${id}" class="${POPUP_LABEL_CLASS_NAME}">Select zone color:</label>
+            <input type="color" id="${id}" value="${color || DEFAULT_ZONE_LAYER_COLOR}" />
+        </div>
+        `;
 }
 
 export function getPopupButton(text, id) {
