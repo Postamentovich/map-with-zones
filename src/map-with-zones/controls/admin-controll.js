@@ -105,6 +105,7 @@ export class AdminControll {
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
      */
     onMouseMoveEdit = (e) => {
+        if (!this.editZone) return;
         this.editZone.coordinates.push(e.lngLat.toArray());
         this.updateEditZoneLayer();
     };
