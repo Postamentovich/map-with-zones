@@ -1,13 +1,17 @@
-import * as turf from "@turf/turf";
+import { getDataByCoordinates } from "../utils/get-data-by-coordinates";
+
 export class ZoneLayer {
     /**
      * @param {mapboxgl.Map} map
      * @param {string} id
      */
-    constructor(map, id) {
+    constructor(map, id, options) {
+        const color = (options && options.color) || "#088";
         this.map = map;
         this.layerId = `zone-${id}-layer`;
         this.sourceId = `zone-${id}-source`;
+        this.id = id;
+        this.color = color;
     }
 
     /**
@@ -20,26 +24,24 @@ export class ZoneLayer {
         this.addLayer();
     }
 
+    setColor(color) {
+        this.map.setPaintProperty(this.layerId, "fill-color", color);
+    }
+
     /**
-     *
      * @param {number} radius
      * @param {mapboxgl.LngLat} coor
      */
     addSource(coordinates) {
+        const data = getDataByCoordinates(coordinates, this.id);
+        if (!data) return;
+
         const source = this.getSource();
-        const line = turf.lineString(coordinates);
-        const simlified = turf.simplify(line, { tolerance: 0.00001 });
-
-        if (simlified.geometry.coordinates.length < 4) return;
-
-        const polygon = turf.lineToPolygon(simlified);
-        const data = turf.featureCollection([polygon]);
-
         if (source) {
-            source.setData(data);
-        } else {
-            this.map.addSource(this.sourceId, { type: "geojson", data });
+            return source.setData(data);
         }
+
+        this.map.addSource(this.sourceId, { type: "geojson", data });
     }
 
     addLayer() {
@@ -51,8 +53,9 @@ export class ZoneLayer {
             type: "fill",
             layout: {},
             paint: {
-                "fill-color": "#088",
-                "fill-opacity": 0.8,
+                "fill-color": this.color,
+                "fill-opacity": 0.5,
+                "fill-outline-color": 'transparent',
             },
         });
     }
