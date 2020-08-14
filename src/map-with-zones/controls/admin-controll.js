@@ -128,11 +128,13 @@ export class AdminControll {
     };
 
     cancelEditZone = () => {
-        const layer = this.layers.get(this.editZone.id);
-        const zone = this.zones.find((el) => el.id === this.editZone.id);
-        if (layer) {
-            layer.setColor(zone.color);
-            layer.update(zone.coordinates);
+        if (this.editZone) {
+            const layer = this.layers.get(this.editZone.id);
+            const zone = this.zones.find((el) => el.id === this.editZone.id);
+            if (layer && zone) {
+                layer.setColor(zone.color);
+                layer.update(zone.coordinates);
+            }
         }
         if (this.editPopup) this.editPopup.remove();
         this.editZone = null;
