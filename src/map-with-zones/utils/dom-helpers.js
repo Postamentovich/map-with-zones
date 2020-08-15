@@ -65,3 +65,9 @@ export function getPopupInputName(name, id) {
         <label for=${id} class="${POPUP_LABEL_CLASS_NAME}">Enter zone name:</label></br>
         <input type="text" id="${id}" value="${name || " "}" class="${POPUP_INPUT_CLASS_NAME}" /></br>`;
 }
+
+export function getPopupInputRadius(radius, id) {
+    return `
+        <label for=${id} class="${POPUP_LABEL_CLASS_NAME}">Enter radius (km):</label></br>
+        <input type="number" id="${id}" value="${radius || 0}" class="${POPUP_INPUT_CLASS_NAME}" /></br>`;
+}

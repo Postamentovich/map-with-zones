@@ -16,6 +16,7 @@ export class UserControll {
         this.map = map;
         this.container = document.createElement("div");
         this.container.className = "mapboxgl-ctrl";
+
         this.init();
         return this.container;
     }

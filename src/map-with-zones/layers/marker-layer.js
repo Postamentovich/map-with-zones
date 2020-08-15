@@ -1,4 +1,6 @@
 import mapboxgl from "mapbox-gl";
+import { POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
+import { getPopupInputRadius, getPopupButton } from "../utils/dom-helpers";
 
 export const MarkerLayerEvents = {
     dragend: "dragend",
@@ -7,6 +9,7 @@ export const MarkerLayerEvents = {
 
 export class MarkerLayer extends mapboxgl.Evented {
     radiusInputId = "marker-input-radius";
+    radiusButtonId = "marker-button-radius";
 
     /**
      *
@@ -35,9 +38,11 @@ export class MarkerLayer extends mapboxgl.Evented {
 
     getPopupContent() {
         return `
-        <div class='radius-popup'>
-            <label for=${this.radiusInputId}>Enter radius</label>
-            <input id=${this.radiusInputId} type='number'/>
+        <div class=${POPUP_BASE_CLASS_NAME}>
+            ${getPopupInputRadius(0, this.radiusInputId)}
+            <div class="${POPUP_CONTROLS_CLASS_NAME}">
+                ${getPopupButton("Select", this.radiusButtonId)}
+            </div>
         </div>
         `;
     }

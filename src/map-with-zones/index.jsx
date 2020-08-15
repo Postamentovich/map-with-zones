@@ -4,6 +4,7 @@ import { UserControll } from "./controls/user-controll";
 import { AdminControll } from "./controls/admin-controll";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./index.scss";
+import { ZoneControll } from "./controls/zone-controll";
 
 const mapId = "mapbox-container-element-id";
 
@@ -18,7 +19,7 @@ export const Cities = {
  * @prop {boolean} isAdmin
  * @prop {mapboxgl.LngLat} cityCoor
  *
- * @extends {Component<Props>}
+ * @extends {React.Component<Props>}
  */
 export class MapWithZones extends React.Component {
     componentDidMount() {
@@ -34,8 +35,10 @@ export class MapWithZones extends React.Component {
             zoom: 12,
         });
 
-        this.userControll = new UserControll();
-        this.adminControll = new AdminControll();
+        this.zoneControll = new ZoneControll();
+        this.map.addControl(this.zoneControll);
+        this.userControll = new UserControll(this.zoneControll);
+        this.adminControll = new AdminControll(this.zoneControll);
 
         if (isAdmin) {
             this.map.addControl(this.adminControll);

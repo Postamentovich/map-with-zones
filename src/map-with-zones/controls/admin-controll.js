@@ -18,8 +18,6 @@ import {
 import { ZoneApi } from "../api/zone-api";
 
 export class AdminControll {
-    zones = [];
-    layers = new Map();
     isCreateMode = false;
     isEditMode = false;
     isDeleteMode = false;
@@ -27,7 +25,6 @@ export class AdminControll {
     editZoneId = null;
     cacheZone = null;
     newZone = getDefaultZone();
-    zoneApi = new ZoneApi();
 
     /** ID for elements */
     popupCreateId = `${CONTROL_BASE_CLASS_NAME}__popup-create`;
@@ -51,6 +48,15 @@ export class AdminControll {
     zoneLayerPatternId = /zone-layer-\w/i;
 
     /**
+     *
+     * @param {ZoneControll} zoneControll
+     */
+    constructor(zoneControll) {
+        this.zoneControll = zoneControll;
+        this.zoneApi = new ZoneApi();
+    }
+
+    /**
      * @param {mapboxgl.Map} map
      */
     onAdd(map) {
@@ -63,15 +69,7 @@ export class AdminControll {
         this.container.appendChild(this.createButton);
         this.container.appendChild(this.deleteButton);
         this.container.appendChild(this.editButton);
-        this.getZones();
         return this.container;
-    }
-
-    async getZones() {
-        const items = await this.zoneApi.getZoneList();
-        if (!items) return;
-        this.zones = items;
-        this.drawZones();
     }
 
     onRemove() {
@@ -98,9 +96,7 @@ export class AdminControll {
 
     updateEditZoneLayer() {
         if (!this.editZone || this.editZone.coordinates.length < 4) return;
-        const layer = this.layers.get(this.editZone.id);
-        if (!layer) return;
-        layer.update(this.editZone.coordinates);
+        this.zoneControll.updateZoneCoordinates(this.editZone.id, this.editZone.coordinates);
     }
 
     /**
@@ -132,32 +128,19 @@ export class AdminControll {
     onGeometryEdit = () => {
         if (this.editPopup) this.editPopup.remove();
         disableMapInteraction(this.map);
-        const layer = this.layers.get(this.editZone.id);
-        if (layer) layer.remove();
+        this.zoneControll.removeZoneLayer(this.editZone.id);
         this.editZone.coordinates = [];
         this.map.on("mousedown", this.onMouseDownEdit);
     };
 
     cancelEditZone = () => {
-        if (this.editZone) {
-            const layer = this.layers.get(this.editZone.id);
-            const zone = this.zones.find((el) => el.id === this.editZone.id);
-            if (layer && zone) {
-                layer.setColor(zone.color);
-                layer.update(zone.coordinates);
-            }
-        }
+        this.zoneControll.drawZones();
         if (this.editPopup) this.editPopup.remove();
         this.editZone = null;
     };
 
     onSaveEdit = async () => {
-        await this.zoneApi.updateZone(this.editZone);
-
-        this.zones = this.zones.map((el) => {
-            if (el.id === this.editZone.id) return this.editZone;
-            return el;
-        });
+        await this.zoneControll.updateZone(this.editZone);
 
         if (this.editPopup) this.editPopup.remove();
         this.editZone = null;
@@ -166,9 +149,7 @@ export class AdminControll {
     editZoneColor = (e) => {
         const color = e.target.value;
         this.editZone.color = color;
-        const layer = this.layers.get(this.editZone.id);
-        if (!layer) return;
-        layer.setColor(color);
+        this.zoneControll.updateZoneColor(this.editZone.id, color);
     };
 
     editZoneName = (e) => {
@@ -208,8 +189,7 @@ export class AdminControll {
         const zoneId = feature.properties.id;
         if (this.editZone && zoneId === this.editZone.id) return;
         if (this.editPopup) this.editPopup.remove();
-        const zone = this.zones.find((el) => el.id === zoneId);
-        if (!zone) return;
+        const zone = this.zoneControll.getZoneById(zoneId);
         this.editZone = _.cloneDeep(zone);
         this.showEditPopup();
     };
@@ -235,9 +215,7 @@ export class AdminControll {
     //#region Create zone
 
     onClickCreateButton = () => {
-        if (this.isCreateMode) {
-            return this.disableCreateMode();
-        }
+        if (this.isCreateMode) return this.disableCreateMode();
         this.disableAllModes();
         this.enableCreateMode();
     };
@@ -296,13 +274,10 @@ export class AdminControll {
 
     createZone = () => {
         const zone = _.cloneDeep(this.newZone);
-        this.zoneApi.addZone(zone);
-        this.zones.push(zone);
+        this.zoneControll.createZone(zone);
         this.onClickCreateButton();
         this.createPopup.remove();
         this.newZonelayer.remove();
-        this.drawZones();
-
         this.newZone = getDefaultZone();
     };
 
@@ -311,7 +286,7 @@ export class AdminControll {
     }
 
     getCreatePopupContent() {
-        const name = `Zone ${this.zones.length + 1}`;
+        const name = this.zoneControll.getNewZoneName();
         this.newZone.name = name;
         return `
             <div class=${POPUP_BASE_CLASS_NAME}>
@@ -379,17 +354,12 @@ export class AdminControll {
     };
 
     deleteZone = async (zoneId) => {
-        await this.zoneApi.deleteZone(zoneId);
+        await this.zoneControll.deleteZone(zoneId);
         this.deletePopup.remove();
-        this.zones = this.zones.filter((zone) => zone.id !== zoneId);
-        const layer = this.layers.get(zoneId);
-        if (!layer) return;
-        layer.remove();
-        this.layers.delete(zoneId);
     };
 
-    showDeletePopup(id) {
-        const zone = this.zones.find((el) => el.id === id);
+    showDeletePopup(zoneId) {
+        const zone = this.zoneControll.getZoneById(zoneId);
 
         if (!zone) return;
 
@@ -440,9 +410,7 @@ export class AdminControll {
     }
 
     onClickDeleteButton = () => {
-        if (this.isDeleteMode) {
-            return this.disableDeleteMode();
-        }
+        if (this.isDeleteMode) return this.disableDeleteMode();
         this.disableAllModes();
         this.enableDeletetingMode();
     };
@@ -472,16 +440,6 @@ export class AdminControll {
         if (this.isEditMode) this.disableEditMode();
         if (this.isDeleteMode) this.disableDeleteMode();
         if (this.isCreateMode) this.disableCreateMode();
-    }
-
-    drawZones() {
-        this.zones.forEach((zone) => {
-            const existLayer = this.layers.get(zone.id);
-            if (existLayer) return;
-            const layer = new ZoneLayer(this.map, zone.id, { color: zone.color });
-            layer.update(zone.coordinates);
-            this.layers.set(zone.id, layer);
-        });
     }
 
     getZoneFeatureByEvent(e) {
