@@ -47,3 +47,9 @@ export function getZoneLineByCoordinates(coordinates, id) {
 export function getCircleByRadius(center, radius) {
     return turf.circle(center.toArray(), radius);
 }
+
+export function getLineByRadius(center, radius) {
+    if (!center || !radius) return;
+    const circle = turf.circle(center.toArray(), radius);
+    return turf.polygonToLine(circle);
+}

@@ -1,4 +1,5 @@
 export const DEFAULT_ZONE_LAYER_COLOR = "#008888";
+export const DEFAULT_RADIUS_LAYER_COLOR = "#292828";
 export const MAP_ID = "mapbox-container-element-id";
 export const CONTROL_BASE_CLASS_NAME = "map-controll";
 export const CONTROL_BUTTON_CLASS_NAME = `${CONTROL_BASE_CLASS_NAME}__button`;

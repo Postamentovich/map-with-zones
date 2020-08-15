@@ -83,6 +83,7 @@ export function createUserControllTable() {
 
     const table = document.createElement("div");
     table.className = TABLE_BASE_CLASS_NAME;
+    table.id = TABLE_BASE_CLASS_NAME;
 
     const title = document.createElement("span");
     title.className = TABLE_TITLE_CLASS_NAME;
@@ -95,6 +96,12 @@ export function createUserControllTable() {
     table.appendChild(title);
     table.appendChild(zones);
     map.appendChild(table);
+}
+
+export function removeUserTable() {
+    const table = document.getElementById(TABLE_BASE_CLASS_NAME);
+    if (!table) return;
+    table.remove();
 }
 
 export function setUserTableTitle(title) {

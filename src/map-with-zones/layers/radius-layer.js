@@ -1,4 +1,6 @@
 import { getCircleByRadius } from "../utils/zone-helpers";
+import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
+import { RadiusStrokeLayer } from "./radius-stroke-layer";
 
 export class RadiusLayer {
     layerId = "radius-layer";
@@ -10,6 +12,7 @@ export class RadiusLayer {
      */
     constructor(map) {
         this.map = map;
+        this.strokeLayer = new RadiusStrokeLayer(map);
     }
 
     /**
@@ -21,6 +24,7 @@ export class RadiusLayer {
         if (radius > 0) {
             this.addSource(radius, coor);
             this.addLayer();
+            this.strokeLayer.update(radius, coor);
         } else {
             this.remove();
         }
@@ -49,8 +53,8 @@ export class RadiusLayer {
             source: this.sourceId,
             type: "fill",
             paint: {
-                "fill-color": "#088",
-                "fill-opacity": 0.8,
+                "fill-color": DEFAULT_RADIUS_LAYER_COLOR,
+                "fill-opacity": 0.4,
             },
         });
     }
@@ -58,6 +62,7 @@ export class RadiusLayer {
     remove() {
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
+        this.strokeLayer.remove();
     }
 
     getSource() {

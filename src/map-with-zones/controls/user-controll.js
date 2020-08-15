@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
 import { RadiusLayer } from "../layers/radius-layer";
-import { createUserControllTable, setUserTableTitle, setUserTableZones } from "../utils/dom-helpers";
+import { createUserControllTable, setUserTableTitle, setUserTableZones, removeUserTable } from "../utils/dom-helpers";
 import { getCircleByRadius, getZonePolygonByCoordinates } from "../utils/zone-helpers";
 
 export class UserControll {
@@ -41,6 +41,7 @@ export class UserControll {
         if (this.markerLayer) this.markerLayer.remove();
         if (this.radiusLayer) this.radiusLayer.remove();
         this.map.off("click", this.onMapClick);
+        removeUserTable();
     }
 
     enableUserMode() {
