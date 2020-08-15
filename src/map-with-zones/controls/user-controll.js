@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
 import { RadiusLayer } from "../layers/radius-layer";
-import { createUserControllTable, setUserTableTitle } from "../utils/dom-helpers";
+import { createUserControllTable, setUserTableTitle, setUserTableZones } from "../utils/dom-helpers";
 import { getCircleByRadius, getZonePolygonByCoordinates } from "../utils/zone-helpers";
 
 export class UserControll {
@@ -62,7 +62,7 @@ export class UserControll {
             const intersection = turf.intersect(circle, polygon);
             return !!intersection;
         });
-        console.log(intersectedZones);
+        setUserTableZones(intersectedZones);
     }
 
     onRadiusChanged = ({ radius }) => {

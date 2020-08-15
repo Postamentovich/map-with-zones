@@ -103,3 +103,8 @@ export function setUserTableTitle(title) {
     titleElement.innerText = title;
 }
 
+export function setUserTableZones(zones) {
+    const zoneElement = document.getElementById(TABLE_ZONES_CLASS_NAME);
+    if (!zoneElement) return;
+    zoneElement.innerHTML = zones.map((zone) => `<span>${zone.name}</span>`).join(" ");
+}
