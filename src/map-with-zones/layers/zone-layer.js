@@ -9,12 +9,12 @@ export class ZoneLayer {
      * @param {string} id
      */
     constructor(map, id, options) {
-        const color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
         this.map = map;
         this.layerId = `zone-layer-${id}`;
         this.sourceId = `zone-source-${id}`;
         this.id = id;
-        this.color = color;
+        this.color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
+        this.name = options && options.name;
         this.strokeLayer = new ZoneStrokeLayer(map, id, options);
         this.nameLayer = new ZoneNameLayer(map, id, options);
     }
@@ -24,11 +24,11 @@ export class ZoneLayer {
      * @param {number} radius
      * @param {mapboxgl.LngLat} coor
      */
-    update(coordinates) {
+    update(coordinates, isEdit = false) {
         this.addSource(coordinates);
         this.addLayer();
         this.strokeLayer.update(coordinates);
-        this.nameLayer.update(coordinates);
+        if (!isEdit) this.nameLayer.update(coordinates);
     }
 
     setColor(color) {

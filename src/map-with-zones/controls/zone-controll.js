@@ -55,6 +55,10 @@ export class ZoneControll {
         this.drawZones();
     }
 
+    getZoneList() {
+        return this.zones;
+    }
+
     getZoneById(zoneId) {
         return this.zones.find((el) => el.id === zoneId);
     }
@@ -68,7 +72,7 @@ export class ZoneControll {
     updateZoneCoordinates(zoneId, coordinates) {
         const layer = this.layers.get(zoneId);
         if (!layer) return;
-        layer.update(coordinates);
+        layer.update(coordinates, true);
     }
 
     removeZoneLayer(zoneId) {

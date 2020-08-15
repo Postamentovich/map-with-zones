@@ -301,7 +301,7 @@ export class AdminControll {
 
     updateNewZoneLayer() {
         if (this.newZone.coordinates.length < 4) return;
-        this.newZonelayer.update(this.newZone.coordinates);
+        this.newZonelayer.update(this.newZone.coordinates, true);
     }
 
     /**

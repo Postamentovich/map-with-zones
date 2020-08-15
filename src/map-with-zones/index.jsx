@@ -5,8 +5,7 @@ import { AdminControll } from "./controls/admin-controll";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./index.scss";
 import { ZoneControll } from "./controls/zone-controll";
-
-const mapId = "mapbox-container-element-id";
+import { MAP_ID } from "./utils/constants";
 
 export const Cities = {
     Bengaluru: new mapboxgl.LngLat(77.59094323372614, 12.975557791300176),
@@ -29,7 +28,7 @@ export class MapWithZones extends React.Component {
         const style = mapStyle || "mapbox://styles/mapbox/streets-v11";
 
         this.map = new mapboxgl.Map({
-            container: mapId,
+            container: MAP_ID,
             style,
             center: cityCoor,
             zoom: 12,
@@ -63,6 +62,6 @@ export class MapWithZones extends React.Component {
     }
 
     render() {
-        return <div id={mapId} />;
+        return <div id={MAP_ID} />;
     }
 }

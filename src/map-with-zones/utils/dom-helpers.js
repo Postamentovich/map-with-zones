@@ -7,6 +7,10 @@ import {
     POPUP_TITLE_CLASS_NAME,
     POPUP_INPUT_CLASS_NAME,
     POPUP_COLOR_CLASS_NAME,
+    TABLE_BASE_CLASS_NAME,
+    TABLE_TITLE_CLASS_NAME,
+    TABLE_ZONES_CLASS_NAME,
+    MAP_ID,
 } from "./constants";
 
 export function createControllButton(content, callback) {
@@ -71,3 +75,31 @@ export function getPopupInputRadius(radius, id) {
         <label for=${id} class="${POPUP_LABEL_CLASS_NAME}">Enter radius (km):</label></br>
         <input type="number" id="${id}" value="${radius || 0}" class="${POPUP_INPUT_CLASS_NAME}" /></br>`;
 }
+
+export function createUserControllTable() {
+    const map = document.getElementById(MAP_ID);
+
+    if (!map) return;
+
+    const table = document.createElement("div");
+    table.className = TABLE_BASE_CLASS_NAME;
+
+    const title = document.createElement("span");
+    title.className = TABLE_TITLE_CLASS_NAME;
+    title.id = TABLE_TITLE_CLASS_NAME;
+
+    const zones = document.createElement("div");
+    zones.className = TABLE_ZONES_CLASS_NAME;
+    zones.id = TABLE_ZONES_CLASS_NAME;
+
+    table.appendChild(title);
+    table.appendChild(zones);
+    map.appendChild(table);
+}
+
+export function setUserTableTitle(title) {
+    const titleElement = document.getElementById(TABLE_TITLE_CLASS_NAME);
+    if (!titleElement) return;
+    titleElement.innerText = title;
+}
+

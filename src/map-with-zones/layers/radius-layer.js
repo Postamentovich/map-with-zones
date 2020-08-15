@@ -1,4 +1,4 @@
-import * as turf from "@turf/turf";
+import { getCircleByRadius } from "../utils/zone-helpers";
 
 export class RadiusLayer {
     layerId = "radius-layer";
@@ -33,8 +33,7 @@ export class RadiusLayer {
      */
     addSource(radius, coor) {
         const source = this.getSource();
-        const circle = turf.circle(coor.toArray(), radius);
-        const data = turf.featureCollection([circle]);
+        const data = getCircleByRadius(coor, radius);
         if (source) {
             source.setData(data);
         } else {
@@ -49,7 +48,6 @@ export class RadiusLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "fill",
-            layout: {},
             paint: {
                 "fill-color": "#088",
                 "fill-opacity": 0.8,

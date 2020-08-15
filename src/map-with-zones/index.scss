@@ -3,13 +3,25 @@
     top: 0;
     bottom: 0;
     width: 100%;
-}
 
-.mapboxgl-ctrl-attrib-inner {
-    display: none;
-}
+    .map-table {
+        box-sizing: border-box;
+        position: absolute;
+        width: 300px;
+        min-height: 30px;
+        background-color: white;
+        top: 15px;
+        right: 15px;
+        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+        border-radius: 4px;
+        padding: 15px;
 
-.mapboxgl-ctrl-group {
+        &__title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    }
+
     .map-controll {
         &__button {
             padding: 11px;
@@ -30,9 +42,7 @@
             }
         }
     }
-}
 
-.mapboxgl-popup-content {
     .map-popup {
         width: 220px;
 
@@ -80,5 +90,9 @@
                 margin-left: 15px;
             }
         }
+    }
+
+    .mapboxgl-ctrl-attrib-inner {
+        display: none;
     }
 }

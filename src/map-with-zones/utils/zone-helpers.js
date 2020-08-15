@@ -32,9 +32,7 @@ export function getCenterZoneCoorByCoordinates(coordinates) {
 export function getZonePolygonByCoordinates(coordinates, id) {
     const line = getZoneLineByCoordinates(coordinates, id);
     if (!line || line.geometry.coordinates.length < 4) return;
-    const polygon = turf.lineToPolygon(line);
-    const data = turf.featureCollection([polygon]);
-    return data;
+    return turf.lineToPolygon(line);
 }
 
 export function getZoneLineByCoordinates(coordinates, id) {
@@ -44,4 +42,8 @@ export function getZoneLineByCoordinates(coordinates, id) {
     const polygon = turf.lineToPolygon(simlified);
     const polygonedLine = turf.polygonToLine(polygon);
     return polygonedLine;
+}
+
+export function getCircleByRadius(center, radius) {
+    return turf.circle(center.toArray(), radius);
 }
