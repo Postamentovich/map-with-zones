@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+}
+.test-panel {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 1;
+
+    & > button {
+        padding: 5px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    &__button-active {
+        background-color: #1eb056;
+        border: 1px solid black;
+        color: white;
+    }
+}

@@ -27,20 +27,35 @@ export class MapWithZones extends React.Component {
         mapboxgl.accessToken = mapToken;
         const style = mapStyle || "mapbox://styles/mapbox/streets-v11";
 
-        const map = new mapboxgl.Map({
+        this.map = new mapboxgl.Map({
             container: mapId,
             style,
             center: cityCoor,
             zoom: 12,
         });
 
-        const userControll = new UserControll();
-        const adminControll = new AdminControll();
+        this.userControll = new UserControll();
+        this.adminControll = new AdminControll();
 
         if (isAdmin) {
-            map.addControl(adminControll);
+            this.map.addControl(this.adminControll);
         } else {
-            map.addControl(userControll);
+            this.map.addControl(this.userControll);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { isAdmin } = this.props;
+
+        if (isAdmin !== prevProps.isAdmin) {
+            if (!this.map) return;
+            if (isAdmin) {
+                this.map.removeControl(this.userControll);
+                this.map.addControl(this.adminControll);
+            } else {
+                this.map.removeControl(this.adminControll);
+                this.map.addControl(this.userControll);
+            }
         }
     }
 

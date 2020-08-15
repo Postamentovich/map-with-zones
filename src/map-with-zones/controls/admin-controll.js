@@ -76,6 +76,7 @@ export class AdminControll {
 
     onRemove() {
         this.container.parentNode.removeChild(this.container);
+        this.disableAllModes();
         this.map = undefined;
     }
 
