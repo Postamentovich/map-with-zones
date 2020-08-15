@@ -32,6 +32,7 @@ export class UserControll {
     onRemove() {
         this.disableUserMode();
         this.container.parentNode.removeChild(this.container);
+        this.data = getDefaultUserData();
         this.map = undefined;
     }
 
@@ -58,7 +59,9 @@ export class UserControll {
     };
 
     findZonesInRadius() {
-        if (!this.data.lngLat || !this.data.radius) return;
+        if (!this.data.lngLat || !this.data.radius) {
+            return setUserTableZones([]);
+        }
         const circle = getCircleByRadius(this.data.lngLat, this.data.radius);
         const zones = this.zoneControll.getZoneList();
         const intersectedZones = zones.filter((zone) => {
@@ -83,7 +86,7 @@ export class UserControll {
     };
 
     updateRadiusLayer() {
-        if (!this.data.radius || !this.data.lngLat) return;
+        if (!this.data.lngLat) return;
         this.radiusLayer.update(this.data.radius, this.data.lngLat);
     }
 

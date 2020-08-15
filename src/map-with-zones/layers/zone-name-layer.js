@@ -13,6 +13,11 @@ export class ZoneNameLayer {
         this.id = id;
     }
 
+    updateName(name) {
+        this.name = name;
+        this.map.setLayoutProperty(this.layerId, "text-field", name);
+    }
+
     update(coordinates) {
         this.addSource(coordinates);
         this.addLayer();

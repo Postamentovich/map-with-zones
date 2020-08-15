@@ -351,6 +351,7 @@ export class AdminControll {
 
     cancelDeleteZone = () => {
         this.deletePopup.remove();
+        this.deleteZoneId = null;
     };
 
     deleteZone = async (zoneId) => {

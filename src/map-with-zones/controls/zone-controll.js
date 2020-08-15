@@ -90,6 +90,7 @@ export class ZoneControll {
             if (existLayer) {
                 existLayer.update(zone.coordinates);
                 existLayer.setColor(zone.color);
+                existLayer.updateName(zone.name);
             } else {
                 const layer = new ZoneLayer(this.map, zone.id, { color: zone.color, name: zone.name });
                 layer.update(zone.coordinates);

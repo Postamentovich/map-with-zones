@@ -14,7 +14,6 @@ export class ZoneLayer {
         this.sourceId = `zone-source-${id}`;
         this.id = id;
         this.color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
-        this.name = options && options.name;
         this.strokeLayer = new ZoneStrokeLayer(map, id, options);
         this.nameLayer = new ZoneNameLayer(map, id, options);
     }
@@ -29,6 +28,10 @@ export class ZoneLayer {
         this.addLayer();
         this.strokeLayer.update(coordinates);
         if (!isEdit) this.nameLayer.update(coordinates);
+    }
+
+    updateName(name) {
+        this.nameLayer.updateName(name);
     }
 
     setColor(color) {
