@@ -15,6 +15,7 @@ import {
     getPopupTitle,
     getPopupInputName,
 } from "../utils/dom-helpers";
+import { ZoneApi } from "../api/zone-api";
 
 export class AdminControll {
     zones = [];
@@ -26,6 +27,7 @@ export class AdminControll {
     editZoneId = null;
     cacheZone = null;
     newZone = getDefaultZone();
+    zoneApi = new ZoneApi();
 
     /** ID for elements */
     popupCreateId = `${CONTROL_BASE_CLASS_NAME}__popup-create`;
@@ -61,7 +63,15 @@ export class AdminControll {
         this.container.appendChild(this.createButton);
         this.container.appendChild(this.deleteButton);
         this.container.appendChild(this.editButton);
+        this.getZones();
         return this.container;
+    }
+
+    async getZones() {
+        const items = await this.zoneApi.getZoneList();
+        if (!items) return;
+        this.zones = items;
+        this.drawZones();
     }
 
     onRemove() {
@@ -140,13 +150,16 @@ export class AdminControll {
         this.editZone = null;
     };
 
-    onSaveEdit = () => {
+    onSaveEdit = async () => {
+        await this.zoneApi.updateZone(this.editZone);
+
         this.zones = this.zones.map((el) => {
             if (el.id === this.editZone.id) return this.editZone;
             return el;
         });
 
         if (this.editPopup) this.editPopup.remove();
+        this.editZone = null;
     };
 
     editZoneColor = (e) => {
@@ -282,11 +295,13 @@ export class AdminControll {
 
     createZone = () => {
         const zone = _.cloneDeep(this.newZone);
+        this.zoneApi.addZone(zone);
         this.zones.push(zone);
         this.onClickCreateButton();
         this.createPopup.remove();
         this.newZonelayer.remove();
         this.drawZones();
+
         this.newZone = getDefaultZone();
     };
 
@@ -362,7 +377,8 @@ export class AdminControll {
         this.deletePopup.remove();
     };
 
-    deleteZone = (zoneId) => {
+    deleteZone = async (zoneId) => {
+        await this.zoneApi.deleteZone(zoneId);
         this.deletePopup.remove();
         this.zones = this.zones.filter((zone) => zone.id !== zoneId);
         const layer = this.layers.get(zoneId);
