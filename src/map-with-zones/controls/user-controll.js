@@ -2,14 +2,11 @@ import * as turf from "@turf/turf";
 import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
 import { RadiusLayer } from "../layers/radius-layer";
 import { createUserControllTable, setUserTableTitle, setUserTableZones, removeUserTable } from "../utils/dom-helpers";
-import { getCircleByRadius, getZonePolygonByCoordinates } from "../utils/zone-helpers";
+import { getCircleByRadius, getZonePolygonByCoordinates, getDefaultUserData } from "../utils/zone-helpers";
+import { UserApi } from "../api/user-api";
 
 export class UserControll {
-    data = {
-        lngLat: null,
-        radius: null,
-        zones: [],
-    };
+    data = getDefaultUserData();
 
     /**
      *
@@ -17,6 +14,7 @@ export class UserControll {
      */
     constructor(zoneControll) {
         this.zoneControll = zoneControll;
+        this.userApi = new UserApi();
     }
 
     /**
@@ -49,10 +47,15 @@ export class UserControll {
         this.radiusLayer = new RadiusLayer(this.map);
         this.markerLayer.on(MarkerLayerEvents.dragend, this.onDragEndMarker);
         this.markerLayer.on(MarkerLayerEvents.radiusChanged, this.onRadiusChanged);
+        this.markerLayer.on(MarkerLayerEvents.buttonClick, this.onButtonClick);
         this.map.once("click", this.onMapClick);
         createUserControllTable();
         setUserTableTitle("Set point on the map");
     }
+
+    onButtonClick = async () => {
+        await this.userApi.sendInfoAboutIncludedZones(this.data);
+    };
 
     findZonesInRadius() {
         if (!this.data.lngLat || !this.data.radius) return;
@@ -63,6 +66,7 @@ export class UserControll {
             const intersection = turf.intersect(circle, polygon);
             return !!intersection;
         });
+        this.data.zones = intersectedZones.map((el) => ({ name: el.name, id: el.id }));
         setUserTableZones(intersectedZones);
     }
 
@@ -79,6 +83,7 @@ export class UserControll {
     };
 
     updateRadiusLayer() {
+        if (!this.data.radius || !this.data.lngLat) return;
         this.radiusLayer.update(this.data.radius, this.data.lngLat);
     }
 
@@ -89,6 +94,7 @@ export class UserControll {
         this.markerLayer.update(e.lngLat);
         this.data.lngLat = e.lngLat;
         this.findZonesInRadius();
+        this.updateRadiusLayer();
         setUserTableTitle("You have selected the following zones:");
     };
 }

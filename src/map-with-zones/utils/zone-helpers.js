@@ -14,6 +14,14 @@ export function getDefaultZone() {
     };
 }
 
+export function getDefaultUserData() {
+    return {
+        lngLat: null,
+        radius: 1,
+        zones: [],
+    };
+}
+
 export function getCenterZoneByCoordinates(coordinates) {
     if (coordinates.length < 2) return;
     const line = turf.lineString(coordinates);

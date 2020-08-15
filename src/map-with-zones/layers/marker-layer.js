@@ -1,10 +1,11 @@
 import mapboxgl from "mapbox-gl";
 import { POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
-import { getPopupInputRadius, getPopupButton } from "../utils/dom-helpers";
+import { getPopupInputRadius, getPopupButton, addElementListener } from "../utils/dom-helpers";
 
 export const MarkerLayerEvents = {
     dragend: "dragend",
     radiusChanged: "radiusChanged",
+    buttonClick: "buttonClick",
 };
 
 export class MarkerLayer extends mapboxgl.Evented {
@@ -30,16 +31,15 @@ export class MarkerLayer extends mapboxgl.Evented {
         );
     }
 
-    subscribeToInput() {
-        const input = document.getElementById(this.radiusInputId);
-        if (!input) return;
-        input.addEventListener("change", this.onInputChange);
+    subscribeToPopup() {
+        addElementListener(this.radiusInputId, "change", this.onInputChange);
+        addElementListener(this.radiusButtonId, "click", this.onButtonClick);
     }
 
     getPopupContent() {
         return `
         <div class=${POPUP_BASE_CLASS_NAME}>
-            ${getPopupInputRadius(0, this.radiusInputId)}
+            ${getPopupInputRadius(1, this.radiusInputId)}
             <div class="${POPUP_CONTROLS_CLASS_NAME}">
                 ${getPopupButton("Select", this.radiusButtonId)}
             </div>
@@ -60,7 +60,7 @@ export class MarkerLayer extends mapboxgl.Evented {
         this.marker.setPopup(this.popup);
         this.marker.addTo(this.map);
         this.marker.togglePopup();
-        this.subscribeToInput();
+        this.subscribeToPopup();
         this.marker.on("dragend", this.onDragEnd);
     }
 
@@ -76,4 +76,8 @@ export class MarkerLayer extends mapboxgl.Evented {
         const lngLat = this.marker.getLngLat();
         this.fire(MarkerLayerEvents.dragend, { lngLat });
     };
+
+    onButtonClick = () => {
+        this.fire(MarkerLayerEvents.buttonClick);
+    }
 }
