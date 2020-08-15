@@ -1,19 +1,16 @@
-import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
-import { getZoneLineByCoordinates } from "../utils/zone-helpers";
+import { getCenterZoneByCoordinates } from "../utils/zone-helpers";
 
-export class ZoneStrokeLayer {
+export class ZoneNameLayer {
     /**
-     *
      * @param {mapboxgl.Map} map
      * @param {string} id
      */
     constructor(map, id, options) {
-        const color = (options && options.color) || DEFAULT_ZONE_LAYER_COLOR;
+        this.name = options && options.name ? options.name : " ";
         this.map = map;
-        this.layerId = `zone-stroke-layer-${id}`;
-        this.sourceId = `zone-stroke-source-${id}`;
+        this.layerId = `zone-name-layer-${id}`;
+        this.sourceId = `zone-name-source-${id}`;
         this.id = id;
-        this.color = color;
     }
 
     update(coordinates) {
@@ -21,13 +18,8 @@ export class ZoneStrokeLayer {
         this.addLayer();
     }
 
-    setColor(color) {
-        this.color = color;
-        this.map.setPaintProperty(this.layerId, "line-color", color);
-    }
-
     addSource(coordinates) {
-        const data = getZoneLineByCoordinates(coordinates, this.id);
+        const data = getCenterZoneByCoordinates(coordinates);
         if (!data) return;
 
         const source = this.getSource();
@@ -44,14 +36,14 @@ export class ZoneStrokeLayer {
         this.map.addLayer({
             id: this.layerId,
             source: this.sourceId,
-            type: "line",
+            minzoom: 12,
+            type: "symbol",
             layout: {
-                "line-join": "round",
-                "line-cap": "round",
+                "text-field": this.name,
+                "text-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 12, 18, 46],
             },
             paint: {
-                "line-color": this.color,
-                "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 5, 1, 16, 6],
+                "text-color": "white",
             },
         });
     }

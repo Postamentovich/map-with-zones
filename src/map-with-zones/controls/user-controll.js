@@ -16,17 +16,23 @@ export class UserControll {
         this.map = map;
         this.container = document.createElement("div");
         this.container.className = "mapboxgl-ctrl";
-
-        this.init();
+        this.enableUserMode();
         return this.container;
     }
 
     onRemove() {
+        this.disableUserMode();
         this.container.parentNode.removeChild(this.container);
         this.map = undefined;
     }
 
-    init() {
+    disableUserMode() {
+        if (this.markerLayer) this.markerLayer.remove();
+        if (this.radiusLayer) this.radiusLayer.remove();
+        this.map.off("click", this.onMapClick);
+    }
+
+    enableUserMode() {
         this.markerLayer = new MarkerLayer(this.map);
         this.radiusLayer = new RadiusLayer(this.map);
         this.markerLayer.on(MarkerLayerEvents.dragend, this.onDragEndMarker);

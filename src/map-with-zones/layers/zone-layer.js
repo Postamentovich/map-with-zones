@@ -1,6 +1,7 @@
 import { getZonePolygonByCoordinates } from "../utils/zone-helpers";
 import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
 import { ZoneStrokeLayer } from "./zone-stroke-layer";
+import { ZoneNameLayer } from "./zone-name-layer";
 
 export class ZoneLayer {
     /**
@@ -15,6 +16,7 @@ export class ZoneLayer {
         this.id = id;
         this.color = color;
         this.strokeLayer = new ZoneStrokeLayer(map, id, options);
+        this.nameLayer = new ZoneNameLayer(map, id, options);
     }
 
     /**
@@ -26,6 +28,7 @@ export class ZoneLayer {
         this.addSource(coordinates);
         this.addLayer();
         this.strokeLayer.update(coordinates);
+        this.nameLayer.update(coordinates);
     }
 
     setColor(color) {
@@ -70,6 +73,7 @@ export class ZoneLayer {
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
         this.strokeLayer.remove();
+        this.nameLayer.remove();
     }
 
     getSource() {

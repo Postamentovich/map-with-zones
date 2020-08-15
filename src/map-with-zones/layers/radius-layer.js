@@ -22,7 +22,7 @@ export class RadiusLayer {
             this.addSource(radius, coor);
             this.addLayer();
         } else {
-            this.removeLayer();
+            this.remove();
         }
     }
 
@@ -57,7 +57,7 @@ export class RadiusLayer {
         });
     }
 
-    removeLayer() {
+    remove() {
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
     }

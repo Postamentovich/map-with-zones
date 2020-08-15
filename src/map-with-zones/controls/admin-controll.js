@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import _ from "lodash";
 import { ZoneLayer } from "../layers/zone-layer";
-import { generateUniqueId, getDefaultZone, getCenterZoneByCoordinates } from "../utils/zone-helpers";
+import { generateUniqueId, getDefaultZone, getCenterZoneCoorByCoordinates } from "../utils/zone-helpers";
 import { getPlusIconSvg, getEditIconSvg, getDeleteIconSvg } from "../utils/svg-helpers";
 import { enableMapInteraction, disableMapInteraction } from "../utils/map-helpers";
 import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
@@ -170,7 +170,7 @@ export class AdminControll {
     }
 
     showEditPopup() {
-        const coor = getCenterZoneByCoordinates(this.editZone.coordinates);
+        const coor = getCenterZoneCoorByCoordinates(this.editZone.coordinates);
         if (!coor) return;
         this.editPopup = new mapboxgl.Popup({
             closeButton: false,
@@ -241,7 +241,7 @@ export class AdminControll {
     };
 
     showCreatePopup() {
-        const coor = getCenterZoneByCoordinates(this.newZone.coordinates);
+        const coor = getCenterZoneCoorByCoordinates(this.newZone.coordinates);
 
         if (!coor) return;
 
@@ -363,7 +363,7 @@ export class AdminControll {
 
         if (!zone) return;
 
-        const coor = getCenterZoneByCoordinates(zone.coordinates);
+        const coor = getCenterZoneCoorByCoordinates(zone.coordinates);
 
         if (!coor) return;
 

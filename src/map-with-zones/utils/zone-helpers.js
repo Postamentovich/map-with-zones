@@ -19,6 +19,12 @@ export function getCenterZoneByCoordinates(coordinates) {
     const line = turf.lineString(coordinates);
     const polygon = turf.lineToPolygon(line);
     const center = turf.centerOfMass(polygon);
+    return center;
+}
+
+export function getCenterZoneCoorByCoordinates(coordinates) {
+    const center = getCenterZoneByCoordinates(coordinates);
+    if (!center) return;
     const coor = turf.getCoord(center);
     return coor;
 }

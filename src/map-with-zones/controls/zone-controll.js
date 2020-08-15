@@ -13,7 +13,7 @@ export class ZoneControll {
         this.map = map;
         this.container = document.createElement("div");
         this.container.className = "mapboxgl-ctrl";
-        this.init();
+        map.on("load", this.init);
         return this.container;
     }
 
@@ -22,12 +22,12 @@ export class ZoneControll {
         this.map = undefined;
     }
 
-    async init() {
+    init = async () => {
         const zones = await this.zoneApi.getZoneList();
         if (!zones) return;
         this.zones = zones;
         this.drawZones();
-    }
+    };
 
     async deleteZone(zoneId) {
         await this.zoneApi.deleteZone(zoneId);
@@ -87,7 +87,7 @@ export class ZoneControll {
                 existLayer.update(zone.coordinates);
                 existLayer.setColor(zone.color);
             } else {
-                const layer = new ZoneLayer(this.map, zone.id, { color: zone.color });
+                const layer = new ZoneLayer(this.map, zone.id, { color: zone.color, name: zone.name });
                 layer.update(zone.coordinates);
                 this.layers.set(zone.id, layer);
             }

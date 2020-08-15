@@ -47,6 +47,11 @@ export class MarkerLayer extends mapboxgl.Evented {
         `;
     }
 
+    remove() {
+        if (this.marker) this.marker.remove();
+        if (this.popup) this.popup.remove();
+    }
+
     /**
      * @param {mapboxgl.LngLat} coor
      */
