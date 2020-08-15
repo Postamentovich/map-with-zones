@@ -9,7 +9,6 @@ export class UserControll {
     data = getDefaultUserData();
 
     /**
-     *
      * @param {import('./zone-controll').ZoneControll} zoneControll
      */
     constructor(zoneControll) {

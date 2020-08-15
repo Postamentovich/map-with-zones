@@ -3,7 +3,6 @@ import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
 
 export class RadiusStrokeLayer {
     /**
-     *
      * @param {mapboxgl.Map} map
      * @param {string} id
      */
