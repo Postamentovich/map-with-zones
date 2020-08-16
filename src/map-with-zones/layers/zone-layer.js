@@ -35,10 +35,6 @@ export class ZoneLayer {
         this.strokeLayer.setColor(color);
     }
 
-    /**
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     addSource(coordinates) {
         const data = getZonePolygonByCoordinates(coordinates, this.id);
         if (!data) return;
