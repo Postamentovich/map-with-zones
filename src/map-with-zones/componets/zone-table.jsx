@@ -15,7 +15,7 @@ export const ZoneTable = ({ zones, itHasPoint }) => {
                 <span className={TABLE_TITLE_CLASS_NAME}>You have selected the following zones:</span>
                 <div className={TABLE_ZONES_CLASS_NAME}>
                     {zones.map((zone) => (
-                        <span>{zone.name}</span>
+                        <span key={zone.id}>{zone.name}</span>
                     ))}
                 </div>
             </>

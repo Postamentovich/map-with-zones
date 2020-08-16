@@ -70,7 +70,7 @@ export class AdminControll {
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
      */
     onMouseUpEdit = (e) => {
-        this.map.off("mousemove", this.onMouseMoveEdit);
+        if (this.map) this.map.off("mousemove", this.onMouseMoveEdit);
         if (this.editZone) this.showEditPopup(this.editZone.id);
         this.drawEditLayer.remove();
         if (this.editZone && this.editZone.coordinates.length > 4) {
@@ -94,8 +94,8 @@ export class AdminControll {
      * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
      */
     onMouseDownEdit = (e) => {
-        this.map.on("mousemove", this.onMouseMoveEdit);
-        this.map.once("mouseup", this.onMouseUpEdit);
+        if (this.map) this.map.on("mousemove", this.onMouseMoveEdit);
+        if (this.map) this.map.once("mouseup", this.onMouseUpEdit);
     };
 
     onGeometryEdit = () => {
@@ -106,7 +106,7 @@ export class AdminControll {
         this.drawEditLayer = new DrawLayer(this.map, this.editZone.id, { color: this.editZone.color });
         this.zoneControll.removeZoneLayer(this.editZone.id);
         this.editZone.coordinates = [];
-        this.map.on("mousedown", this.onMouseDownEdit);
+        if (this.map) this.map.on("mousedown", this.onMouseDownEdit);
     };
 
     cancelEditZone = () => {
@@ -175,14 +175,14 @@ export class AdminControll {
     enableEditMode = () => {
         addActiveClassForButton(this.editButton);
         this.addCursorPointerListener();
-        this.map.on("click", this.onClickEdit);
+        if (this.map) this.map.on("click", this.onClickEdit);
         this.isEditMode = true;
     };
 
     disableEditMode = () => {
         removeActiveClassForButton(this.editButton);
         this.removeCursorPointerListener();
-        this.map.off("click", this.onClickEdit);
+        if (this.map) this.map.off("click", this.onClickEdit);
         this.cancelEditZone();
         this.editZone = null;
         this.isEditMode = false;
@@ -202,9 +202,9 @@ export class AdminControll {
         this.newZone = getDefaultZone();
         const id = generateUniqueId();
         this.newZone.id = id;
-        this.drawlayer = new DrawLayer(this.map, id);
+        if (this.map) this.drawlayer = new DrawLayer(this.map, id);
         this.newZonelayer = new ZoneLayer(this.map, id);
-        this.map.once("mousedown", this.onMouseDownCreate);
+        if (this.map) this.map.once("mousedown", this.onMouseDownCreate);
         addActiveClassForButton(this.createButton);
         disableMapInteraction(this.map);
         setDefaultCursor(this.map);
@@ -301,8 +301,8 @@ export class AdminControll {
      */
     onMouseDownCreate = (e) => {
         this.newZone.coordinates.push(e.lngLat.toArray());
-        this.map.on("mousemove", this.onMouseMoveCreate);
-        this.map.once("mouseup", this.onMouseUpCreate);
+        if (this.map) this.map.on("mousemove", this.onMouseMoveCreate);
+        if (this.map) this.map.once("mouseup", this.onMouseUpCreate);
     };
 
     //#endregion
@@ -315,7 +315,6 @@ export class AdminControll {
     };
 
     deleteZone = async () => {
-        console.log("delete", this.deleteZoneId);
         await this.zoneControll.deleteZone(this.deleteZoneId);
         this.deletePopup.remove();
         this.deleteZoneId = null;
@@ -353,14 +352,14 @@ export class AdminControll {
     };
 
     enableDeletetingMode() {
-        this.map.on("click", this.onClickDeleteZone);
+        if (this.map) this.map.on("click", this.onClickDeleteZone);
         addActiveClassForButton(this.deleteButton);
         this.addCursorPointerListener();
         this.isDeleteMode = true;
     }
 
     disableDeleteMode() {
-        this.map.off("click", this.onClickDeleteZone);
+        if (this.map) this.map.off("click", this.onClickDeleteZone);
         removeActiveClassForButton(this.deleteButton);
 
         if (this.deletePopup) {

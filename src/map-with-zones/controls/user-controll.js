@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import * as turf from "@turf/turf";
 import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
 import { RadiusLayer } from "../layers/radius-layer";
-import { getCircleByRadius, getZonePolygonByCoordinates, getDefaultUserData } from "../utils/zone-helpers";
+import { getDefaultUserData, isZoneIntersected } from "../utils/zone-helpers";
 import { UserApi } from "../api/user-api";
 import { MAP_ID } from "../utils/constants";
 import { ZoneTable } from "../componets/zone-table";
@@ -79,13 +78,10 @@ export class UserControll {
             this.updateUserTable();
             return;
         }
-        const circle = getCircleByRadius(this.data.lngLat, this.data.radius);
         const zones = this.zoneControll.getZoneList();
-        const intersectedZones = zones.filter((zone) => {
-            const polygon = getZonePolygonByCoordinates(zone.coordinates, zone.id);
-            const intersection = turf.intersect(circle, polygon);
-            return !!intersection;
-        });
+        const intersectedZones = zones.filter((zone) =>
+            isZoneIntersected(this.data.radius, this.data.lngLat, zone.coordinates),
+        );
         this.data.zones = intersectedZones.map((el) => ({ name: el.name, id: el.id }));
         this.updateUserTable();
     }

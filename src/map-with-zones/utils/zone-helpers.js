@@ -23,10 +23,9 @@ export function getDefaultUserData() {
 }
 
 export function getCenterZoneByCoordinates(coordinates) {
-    if (coordinates.length < 2) return;
-    const line = turf.lineString(coordinates);
-    const polygon = turf.lineToPolygon(line);
-    const center = turf.centerOfMass(polygon);
+    const simlified = getDrawingLine(coordinates);
+    if (!simlified) return;
+    const center = turf.center(simlified);
     return center;
 }
 
@@ -38,9 +37,14 @@ export function getCenterZoneCoorByCoordinates(coordinates) {
 }
 
 export function getZonePolygonByCoordinates(coordinates, id) {
-    const line = getZoneLineByCoordinates(coordinates, id);
+    const line = getDrawingLine(coordinates, id);
     if (!line || line.geometry.coordinates.length < 4) return;
-    return turf.lineToPolygon(line);
+    let polygon = turf.lineToPolygon(line);
+    const kinks = turf.kinks(polygon);
+    if (kinks.features.length) {
+        polygon = turf.unkinkPolygon(polygon);
+    }
+    return polygon;
 }
 
 export function getZoneLineByCoordinates(coordinates, id) {
@@ -49,6 +53,13 @@ export function getZoneLineByCoordinates(coordinates, id) {
     const polygon = turf.lineToPolygon(simlified);
     const polygonedLine = turf.polygonToLine(polygon);
     return polygonedLine;
+}
+
+export function getDrawingLine(coordinates, id) {
+    if (coordinates.length < 2) return;
+    const line = turf.lineString(coordinates, { id });
+    const simlified = turf.cleanCoords(turf.simplify(line, { tolerance: 0.00001, highQuality: true }));
+    return simlified;
 }
 
 export function getCircleByRadius(center, radius) {
@@ -61,9 +72,10 @@ export function getLineByRadius(center, radius) {
     return turf.polygonToLine(circle);
 }
 
-export function getDrawingLine(coordinates, id) {
+export function isZoneIntersected(radius, center, coordinates) {
     if (coordinates.length < 2) return;
-    const line = turf.lineString(coordinates, { id });
-    const simlified = turf.simplify(line, { tolerance: 0.00001 });
-    return simlified;
+    const line = turf.lineString(coordinates);
+    const point = turf.point(center.toArray());
+    const distance = turf.pointToLineDistance(point, line);
+    return distance <= radius;
 }
