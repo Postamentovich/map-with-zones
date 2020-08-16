@@ -21,13 +21,11 @@ export class MarkerLayer extends mapboxgl.Evented {
         super();
         this.map = map;
 
-        /** @type{mapboxgl.Marker} */
         this.marker = new mapboxgl.Marker({
             draggable: true,
         });
 
         this.popupContainer = document.createElement("div");
-        /** @type{mapboxgl.Popup} */
         this.popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, closeOnMove: false }).setDOMContent(
             this.popupContainer,
         );
@@ -53,10 +51,6 @@ export class MarkerLayer extends mapboxgl.Evented {
         );
     }
 
-    /**
-     *
-     * @param {import("react").ChangeEvent<HTMLInputElement>} e
-     */
     onInputChange = (e) => {
         this.fire(MarkerLayerEvents.radiusChanged, { radius: Number(e.target.value) });
     };

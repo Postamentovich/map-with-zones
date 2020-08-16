@@ -18,11 +18,6 @@ export class ZoneLayer {
         this.nameLayer = new ZoneNameLayer(map, id, options);
     }
 
-    /**
-     *
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     update(coordinates, isEdit = false) {
         this.addSource(coordinates);
         this.addLayer();

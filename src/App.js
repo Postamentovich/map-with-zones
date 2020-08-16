@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MapWithZones, Cities } from "./map-with-zones";
+import { MapWithZones } from "./map-with-zones";
 import "./App.scss";
 
 const App = () => {
@@ -15,7 +15,7 @@ const App = () => {
                     USER MODE
                 </button>
             </div>
-            <MapWithZones mapToken={process.env.REACT_APP_MAPBOX_TOKEN} cityCoor={Cities.Bengaluru} isAdmin={isAdmin} />
+            <MapWithZones mapToken={process.env.REACT_APP_MAPBOX_TOKEN} isAdmin={isAdmin} />
         </div>
     );
 };

@@ -1,8 +1,8 @@
-import { pause } from "../utils/api-helpers";
+import { delay } from "../utils/api-helpers";
 
 export class UserApi {
     async sendInfoAboutIncludedZones(info) {
-        await pause();
+        await delay();
         console.log(info);
     }
 }

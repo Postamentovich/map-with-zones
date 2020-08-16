@@ -1,17 +1,17 @@
-import { pause } from "../utils/api-helpers";
+import { delay } from "../utils/api-helpers";
 
 export class ZoneApi {
     localStoragekey = "mapZones";
 
     async getZoneList() {
-        await pause();
+        await delay();
         const zones = localStorage.getItem(this.localStoragekey);
         if (!zones) return;
         return JSON.parse(zones);
     }
 
     async addZone(zone) {
-        await pause();
+        await delay();
         let newZones = [];
         const zones = await this.getZoneList();
         if (zones) newZones = [...zones];
@@ -21,7 +21,7 @@ export class ZoneApi {
     }
 
     async updateZone(zone) {
-        await pause();
+        await delay();
         const zones = await this.getZoneList();
         if (!zones) return;
         const newZones = zones.map((el) => {
@@ -33,7 +33,7 @@ export class ZoneApi {
     }
 
     async deleteZone(id) {
-        await pause();
+        await delay();
         const zones = await this.getZoneList();
         if (!zones) return;
         const newZones = zones.filter((el) => el.id !== id);

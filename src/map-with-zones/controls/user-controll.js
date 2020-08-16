@@ -20,7 +20,6 @@ export class UserControll {
     }
 
     /**
-     *
      * @param {mapboxgl.Map} map
      */
     onAdd(map) {
@@ -103,9 +102,6 @@ export class UserControll {
         this.radiusLayer.update(this.data.radius, this.data.lngLat);
     }
 
-    /**
-     * @param {mapboxgl.MapMouseEvent & mapboxgl.EventData} e
-     */
     onMapClick = (e) => {
         this.markerLayer.update(e.lngLat);
         this.data.lngLat = e.lngLat;

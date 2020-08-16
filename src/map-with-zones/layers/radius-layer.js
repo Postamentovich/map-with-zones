@@ -15,11 +15,6 @@ export class RadiusLayer {
         this.strokeLayer = new RadiusStrokeLayer(map);
     }
 
-    /**
-     *
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     update(radius, coor) {
         if (radius > 0) {
             this.addSource(radius, coor);
@@ -30,11 +25,6 @@ export class RadiusLayer {
         }
     }
 
-    /**
-     *
-     * @param {number} radius
-     * @param {mapboxgl.LngLat} coor
-     */
     addSource(radius, coor) {
         const source = this.getSource();
         const data = getCircleByRadius(coor, radius);
