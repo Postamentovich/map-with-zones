@@ -24,10 +24,12 @@ export class ZoneLayer {
      * @param {mapboxgl.LngLat} coor
      */
     update(coordinates, isEdit = false) {
-        this.addSource(coordinates);
-        this.addLayer();
+        if (!isEdit) {
+            this.addSource(coordinates);
+            this.addLayer();
+            this.nameLayer.update(coordinates);
+        }
         this.strokeLayer.update(coordinates);
-        if (!isEdit) this.nameLayer.update(coordinates);
     }
 
     updateName(name) {
