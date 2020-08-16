@@ -11,7 +11,7 @@ export const InputName = ({ name, onChange }) => {
             <input
                 type="text"
                 id="popup-input-name"
-                value={name || " "}
+                defaultValue={name || " "}
                 className={POPUP_INPUT_CLASS_NAME}
                 onChange={onChange}
             />

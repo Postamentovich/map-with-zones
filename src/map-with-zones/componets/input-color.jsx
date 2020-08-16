@@ -7,7 +7,12 @@ export const InputColor = ({ color, onChange }) => {
             <label htmlFor="popup-input-color" className={POPUP_LABEL_CLASS_NAME}>
                 Select zone color:
             </label>
-            <input type="color" id="popup-input-color" value={color || DEFAULT_ZONE_LAYER_COLOR} onChange={onChange} />
+            <input
+                type="color"
+                id="popup-input-color"
+                defaultValue={color || DEFAULT_ZONE_LAYER_COLOR}
+                onChange={onChange}
+            />
         </div>
     );
 };

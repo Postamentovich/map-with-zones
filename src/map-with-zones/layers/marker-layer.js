@@ -1,6 +1,9 @@
+import React from "react";
 import mapboxgl from "mapbox-gl";
+import ReactDOM from "react-dom";
 import { POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
 import { getPopupInputRadius, getPopupButton, addElementListener } from "../utils/dom-helpers";
+import { RadiusPopup } from "../componets/radius-popup";
 
 export const MarkerLayerEvents = {
     dragend: "dragend",
@@ -25,27 +28,28 @@ export class MarkerLayer extends mapboxgl.Evented {
             draggable: true,
         });
 
+        this.popupContainer = document.createElement("div");
         /** @type{mapboxgl.Popup} */
-        this.popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, closeOnMove: false }).setHTML(
-            this.getPopupContent(),
+        this.popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, closeOnMove: false }).setDOMContent(
+            this.popupContainer,
         );
     }
 
-    subscribeToPopup() {
-        addElementListener(this.radiusInputId, "change", this.onInputChange);
-        addElementListener(this.radiusButtonId, "click", this.onButtonClick);
-    }
+    // subscribeToPopup() {
+    //     addElementListener(this.radiusInputId, "change", this.onInputChange);
+    //     addElementListener(this.radiusButtonId, "click", this.onButtonClick);
+    // }
 
-    getPopupContent() {
-        return `
-        <div class=${POPUP_BASE_CLASS_NAME}>
-            ${getPopupInputRadius(1, this.radiusInputId)}
-            <div class="${POPUP_CONTROLS_CLASS_NAME}">
-                ${getPopupButton("Select", this.radiusButtonId)}
-            </div>
-        </div>
-        `;
-    }
+    // getPopupContent() {
+    //     return `
+    //     <div class=${POPUP_BASE_CLASS_NAME}>
+    //         ${getPopupInputRadius(1, this.radiusInputId)}
+    //         <div class="${POPUP_CONTROLS_CLASS_NAME}">
+    //             ${getPopupButton("Select", this.radiusButtonId)}
+    //         </div>
+    //     </div>
+    //     `;
+    // }
 
     remove() {
         if (this.marker) this.marker.remove();
@@ -60,8 +64,11 @@ export class MarkerLayer extends mapboxgl.Evented {
         this.marker.setPopup(this.popup);
         this.marker.addTo(this.map);
         this.marker.togglePopup();
-        this.subscribeToPopup();
         this.marker.on("dragend", this.onDragEnd);
+        ReactDOM.render(
+            <RadiusPopup radius={1} onChangeRadius={this.onInputChange} onClickSelect={this.onButtonClick} />,
+            this.popupContainer,
+        );
     }
 
     /**
@@ -79,5 +86,5 @@ export class MarkerLayer extends mapboxgl.Evented {
 
     onButtonClick = () => {
         this.fire(MarkerLayerEvents.buttonClick);
-    }
+    };
 }
