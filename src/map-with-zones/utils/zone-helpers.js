@@ -44,9 +44,8 @@ export function getZonePolygonByCoordinates(coordinates, id) {
 }
 
 export function getZoneLineByCoordinates(coordinates, id) {
-    const line = turf.lineString(coordinates, { id });
-    const simlified = turf.simplify(line, { tolerance: 0.00001 });
-    if (simlified.geometry.coordinates.length < 4) return;
+    const simlified = getDrawingLine(coordinates, id);
+    if (!simlified || simlified.geometry.coordinates.length < 4) return;
     const polygon = turf.lineToPolygon(simlified);
     const polygonedLine = turf.polygonToLine(polygon);
     return polygonedLine;
@@ -60,4 +59,11 @@ export function getLineByRadius(center, radius) {
     if (!center || !radius) return;
     const circle = turf.circle(center.toArray(), radius);
     return turf.polygonToLine(circle);
+}
+
+export function getDrawingLine(coordinates, id) {
+    if (coordinates.length < 2) return;
+    const line = turf.lineString(coordinates, { id });
+    const simlified = turf.simplify(line, { tolerance: 0.00001 });
+    return simlified;
 }

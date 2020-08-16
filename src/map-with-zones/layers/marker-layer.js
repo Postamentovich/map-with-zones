@@ -1,8 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
 import ReactDOM from "react-dom";
-import { POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
-import { getPopupInputRadius, getPopupButton, addElementListener } from "../utils/dom-helpers";
 import { RadiusPopup } from "../componets/radius-popup";
 
 export const MarkerLayerEvents = {
@@ -34,22 +32,6 @@ export class MarkerLayer extends mapboxgl.Evented {
             this.popupContainer,
         );
     }
-
-    // subscribeToPopup() {
-    //     addElementListener(this.radiusInputId, "change", this.onInputChange);
-    //     addElementListener(this.radiusButtonId, "click", this.onButtonClick);
-    // }
-
-    // getPopupContent() {
-    //     return `
-    //     <div class=${POPUP_BASE_CLASS_NAME}>
-    //         ${getPopupInputRadius(1, this.radiusInputId)}
-    //         <div class="${POPUP_CONTROLS_CLASS_NAME}">
-    //             ${getPopupButton("Select", this.radiusButtonId)}
-    //         </div>
-    //     </div>
-    //     `;
-    // }
 
     remove() {
         if (this.marker) this.marker.remove();

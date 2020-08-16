@@ -19,3 +19,13 @@ export function disableMapInteraction(map) {
     map.touchZoomRotate.disable();
     map.touchPitch.disable();
 }
+
+export function setDefaultCursor(map) {
+    if (!map) return;
+    map.getCanvas().style.cursor = "default";
+}
+
+export function resetCursor(map) {
+    if (!map) return;
+    map.getCanvas().style.cursor = "";
+}

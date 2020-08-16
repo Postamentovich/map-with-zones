@@ -5,23 +5,13 @@ import _ from "lodash";
 import { ZoneLayer } from "../layers/zone-layer";
 import { generateUniqueId, getDefaultZone, getCenterZoneCoorByCoordinates } from "../utils/zone-helpers";
 import { getPlusIconSvg, getEditIconSvg, getDeleteIconSvg } from "../utils/svg-helpers";
-import { enableMapInteraction, disableMapInteraction } from "../utils/map-helpers";
-import { CONTROL_BASE_CLASS_NAME, POPUP_BASE_CLASS_NAME, POPUP_CONTROLS_CLASS_NAME } from "../utils/constants";
-import {
-    createControllButton,
-    removeActiveClassForButton,
-    addActiveClassForButton,
-    addElementListener,
-    getPopupInputColor,
-    getPopupButton,
-    getPopupTitle,
-    getPopupInputName,
-} from "../utils/dom-helpers";
+import { enableMapInteraction, disableMapInteraction, setDefaultCursor, resetCursor } from "../utils/map-helpers";
+import { createControllButton, removeActiveClassForButton, addActiveClassForButton } from "../utils/dom-helpers";
 import { ZoneApi } from "../api/zone-api";
-import { Popup } from "../componets/popup";
 import { EditPopup } from "../componets/edit-popup";
 import { CreatePopup } from "../componets/create-popup";
 import { DeletePopup } from "../componets/delete-popup";
+import { DrawLayer } from "../layers/draw-layer";
 
 export class AdminControll {
     isCreateMode = false;
@@ -31,30 +21,9 @@ export class AdminControll {
     editZoneId = null;
     cacheZone = null;
     newZone = getDefaultZone();
-
-    /** ID for elements */
-    popupCreateId = `${CONTROL_BASE_CLASS_NAME}__popup-create`;
-    popupCreateInputNameId = `${this.popupCreateId}-input-name`;
-    popupCreateInputColorId = `${this.popupCreateId}-input-color`;
-    popupCreateButtonSaveId = `${this.popupCreateId}-button-save`;
-    popupCreateButtonCancelId = `${this.popupCreateId}-button-cancel`;
-
-    popupDeleteId = `${CONTROL_BASE_CLASS_NAME}__popup-delete`;
-    popupDeleteButtonConfirmId = `${this.popupDeleteId}-button-confirm`;
-    popupDeleteButtonCancelId = `${this.popupDeleteId}-button-cancel`;
-
-    popupEditId = `${CONTROL_BASE_CLASS_NAME}__popup-edit`;
-    popupEditInputNameId = `${this.popupEditId}-input-name`;
-    popupEditInputColorId = `${this.popupEditId}-input-color`;
-    popupEditButtonSaveId = `${this.popupEditId}-button-save`;
-    popupEditButtonCancelId = `${this.popupEditId}-button-cancel`;
-    popupEditButtonGeometryId = `${this.popupEditId}-button-geometry`;
-
-    /** Patterns */
     zoneLayerPatternId = /zone-layer-\w/i;
 
     /**
-     *
      * @param {ZoneControll} zoneControll
      */
     constructor(zoneControll) {
@@ -94,7 +63,7 @@ export class AdminControll {
 
     updateEditZoneLayer() {
         if (!this.editZone || this.editZone.coordinates.length < 4) return;
-        this.zoneControll.updateZoneCoordinates(this.editZone.id, this.editZone.coordinates);
+        this.drawEditLayer.update(this.editZone.coordinates);
     }
 
     /**
@@ -103,7 +72,13 @@ export class AdminControll {
     onMouseUpEdit = (e) => {
         this.map.off("mousemove", this.onMouseMoveEdit);
         if (this.editZone) this.showEditPopup(this.editZone.id);
+        this.drawEditLayer.remove();
+        if (this.editZone && this.editZone.coordinates.length > 4) {
+            this.zoneControll.updateZoneCoordinates(this.editZone.id, this.editZone.coordinates);
+        }
         enableMapInteraction(this.map);
+        resetCursor(this.map);
+        this.addCursorPointerListener();
     };
 
     /**
@@ -126,6 +101,9 @@ export class AdminControll {
     onGeometryEdit = () => {
         if (this.editPopup) this.editPopup.remove();
         disableMapInteraction(this.map);
+        this.removeCursorPointerListener();
+        setDefaultCursor(this.map);
+        this.drawEditLayer = new DrawLayer(this.map, this.editZone.id, { color: this.editZone.color });
         this.zoneControll.removeZoneLayer(this.editZone.id);
         this.editZone.coordinates = [];
         this.map.on("mousedown", this.onMouseDownEdit);
@@ -224,10 +202,12 @@ export class AdminControll {
         this.newZone = getDefaultZone();
         const id = generateUniqueId();
         this.newZone.id = id;
+        this.drawlayer = new DrawLayer(this.map, id);
         this.newZonelayer = new ZoneLayer(this.map, id);
         this.map.once("mousedown", this.onMouseDownCreate);
         addActiveClassForButton(this.createButton);
         disableMapInteraction(this.map);
+        setDefaultCursor(this.map);
         this.isCreateMode = true;
     }
 
@@ -235,13 +215,11 @@ export class AdminControll {
         this.newZone = getDefaultZone();
         if (this.createPopup) this.createPopup.remove();
         if (this.newZonelayer) this.newZonelayer.remove();
+        if (this.drawlayer) this.drawlayer.remove();
         removeActiveClassForButton(this.createButton);
         enableMapInteraction(this.map);
+        resetCursor(this.map);
         this.isCreateMode = false;
-    };
-
-    testCLick = () => {
-        console.log("testClick");
     };
 
     setNewZoneName = (e) => {
@@ -259,6 +237,7 @@ export class AdminControll {
         this.onClickCreateButton();
         this.createPopup.remove();
         this.newZonelayer.remove();
+        this.drawlayer.remove();
         this.newZone = getDefaultZone();
     };
 
@@ -296,7 +275,7 @@ export class AdminControll {
 
     updateNewZoneLayer() {
         if (this.newZone.coordinates.length < 4) return;
-        this.newZonelayer.update(this.newZone.coordinates, true);
+        this.drawlayer.update(this.newZone.coordinates, true);
     }
 
     /**
@@ -305,6 +284,8 @@ export class AdminControll {
     onMouseUpCreate = (e) => {
         this.map.off("mousemove", this.onMouseMoveCreate);
         this.showCreatePopup();
+        if (this.drawlayer) this.drawlayer.remove();
+        if (this.newZonelayer) this.newZonelayer.update(this.newZone.coordinates, true);
     };
 
     /**
