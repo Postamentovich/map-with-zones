@@ -41,7 +41,8 @@
 
 The main component in folder `src/map-with-zones`;
 
-Example of usage: To use you need a mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
+Example of usage: <br> 
+To use you need a mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
 
 ```js
 import { MapWithZones } from "./map-with-zones";
