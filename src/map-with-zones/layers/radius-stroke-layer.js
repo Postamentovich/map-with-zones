@@ -1,5 +1,5 @@
 import { getLineByRadius } from "../utils/zone-helpers";
-import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
+import { getRadiusLineLayout, getRadiusLinePaint } from "../utils/map-helpers";
 
 export class RadiusStrokeLayer {
     /**
@@ -36,15 +36,8 @@ export class RadiusStrokeLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "line",
-            layout: {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            paint: {
-                "line-color": DEFAULT_RADIUS_LAYER_COLOR,
-                "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 5, 1, 16, 6],
-                "line-dasharray": [5, 3],
-            },
+            layout: getRadiusLineLayout(),
+            paint: getRadiusLinePaint(),
         });
     }
 

@@ -1,6 +1,6 @@
-import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
 import { MapboxApi } from "../api/mapbox-api";
 import { IsochroneStrokeLayer } from "./isochrone-stroke-layer";
+import { getRadiusPolygonPaint } from "../utils/map-helpers";
 
 export class IsochroneLayer {
     layerId = "isochrone-layer";
@@ -50,18 +50,16 @@ export class IsochroneLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "fill",
-            paint: {
-                "fill-color": DEFAULT_RADIUS_LAYER_COLOR,
-                "fill-opacity": 0.4,
-            },
+            paint: getRadiusPolygonPaint(),
         });
     }
 
     remove() {
         this.mapboxApi.cancelIsochroneFetch();
+        this.data = null;
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
-        this.strokeLayer.remove();
+        if (this.strokeLayer) this.strokeLayer.remove();
     }
 
     getSource() {

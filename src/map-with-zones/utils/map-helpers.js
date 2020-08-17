@@ -1,3 +1,5 @@
+import { DEFAULT_RADIUS_LAYER_COLOR } from "./constants";
+
 export function enableMapInteraction(map) {
     if (!map) return;
     map.dragPan.enable();
@@ -28,4 +30,48 @@ export function setDefaultCursor(map) {
 export function resetCursor(map) {
     if (!map) return;
     map.getCanvas().style.cursor = "";
+}
+
+export function getZoneLineLayout() {
+    return {
+        "line-join": "round",
+        "line-cap": "round",
+    };
+}
+
+export function getZoneLinePaint(color) {
+    return {
+        "line-color": color,
+        "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 5, 1, 16, 6],
+    };
+}
+
+export function getZonePolygonPaint(color) {
+    return {
+        "fill-color": color,
+        "fill-opacity": 0.5,
+        "fill-outline-color": "transparent",
+    };
+}
+
+export function getRadiusPolygonPaint() {
+    return {
+        "fill-color": DEFAULT_RADIUS_LAYER_COLOR,
+        "fill-opacity": 0.4,
+    };
+}
+
+export function getRadiusLineLayout() {
+    return {
+        "line-join": "round",
+        "line-cap": "round",
+    };
+}
+
+export function getRadiusLinePaint() {
+    return {
+        "line-color": DEFAULT_RADIUS_LAYER_COLOR,
+        "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 5, 1, 16, 6],
+        "line-dasharray": [5, 3],
+    };
 }

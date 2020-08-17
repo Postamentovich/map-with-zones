@@ -2,6 +2,7 @@ import { getZonePolygonByCoordinates } from "../utils/zone-helpers";
 import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
 import { ZoneStrokeLayer } from "./zone-stroke-layer";
 import { ZoneNameLayer } from "./zone-name-layer";
+import { getZonePolygonPaint } from "../utils/map-helpers";
 
 export class ZoneLayer {
     /**
@@ -55,11 +56,7 @@ export class ZoneLayer {
             source: this.sourceId,
             type: "fill",
             layout: {},
-            paint: {
-                "fill-color": this.color,
-                "fill-opacity": 0.5,
-                "fill-outline-color": "transparent",
-            },
+            paint: getZonePolygonPaint(this.color),
         });
     }
 

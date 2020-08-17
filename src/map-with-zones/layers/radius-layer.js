@@ -1,6 +1,6 @@
 import { getCircleByRadius } from "../utils/zone-helpers";
-import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
 import { RadiusStrokeLayer } from "./radius-stroke-layer";
+import { getRadiusPolygonPaint } from "../utils/map-helpers";
 
 export class RadiusLayer {
     layerId = "radius-layer";
@@ -41,10 +41,7 @@ export class RadiusLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "fill",
-            paint: {
-                "fill-color": DEFAULT_RADIUS_LAYER_COLOR,
-                "fill-opacity": 0.4,
-            },
+            paint: getRadiusPolygonPaint(),
         });
     }
 

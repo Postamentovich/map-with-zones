@@ -1,5 +1,6 @@
 import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
 import { getDrawingLine } from "../utils/zone-helpers";
+import { getZoneLineLayout, getZoneLinePaint } from "../utils/map-helpers";
 
 export class DrawLayer {
     /**
@@ -39,14 +40,8 @@ export class DrawLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "line",
-            layout: {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            paint: {
-                "line-color": this.color,
-                "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 5, 1, 16, 6],
-            },
+            layout: getZoneLineLayout(),
+            paint: getZoneLinePaint(this.color),
         });
     }
 
