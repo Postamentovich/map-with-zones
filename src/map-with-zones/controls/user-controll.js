@@ -114,7 +114,7 @@ export class UserControll {
 
         const intersectedZones = zones.filter((zone) => {
             if (isDistanceMode) return isZoneIntersectedRadius(this.data.radius, this.data.lngLat, zone.coordinates);
-            return isZoneIntersectedTime(polygonData, zone.coordinates);
+            return isZoneIntersectedTime(polygonData, zone.coordinates, this.data.lngLat);
         });
 
         this.data.zones = intersectedZones.map((el) => ({ name: el.name, id: el.id }));
