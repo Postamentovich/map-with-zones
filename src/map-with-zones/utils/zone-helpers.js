@@ -89,11 +89,13 @@ export function isZoneIntersectedRadius(radius, center, zoneCoordinates) {
 
 export function isZoneIntersectedTime(timePolygon, zoneCoordinates, center) {
     if (!timePolygon || !zoneCoordinates) return;
-    const line = turf.lineString(zoneCoordinates);
+    const polygon = getZonePolygonByCoordinates(zoneCoordinates);
     const timeFeature = timePolygon.features[0];
-    const point = turf.point(center.toArray());
-    const nearestPoint = turf.nearestPointOnLine(line, point);
-    const pointsInPolygon = turf.pointsWithinPolygon(nearestPoint, timeFeature);
-    const intersectedPoints = pointsInPolygon && pointsInPolygon.features.length;
-    return !!intersectedPoints;
+    const points = turf.explode(polygon);
+    if (!points || !points.features.length) return;
+
+    for (let i = 0; i < points.features.length; i++) {
+        const point = points.features[i];
+        if (turf.booleanPointInPolygon(point, timeFeature)) return true;
+    }
 }
