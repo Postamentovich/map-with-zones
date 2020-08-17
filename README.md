@@ -42,8 +42,7 @@
 
 The main component in folder `src/map-with-zones`;
 
-Example of usage: <br> 
-To use you need a mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
+Example of usage: <br> To use you need a mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
 
 ```js
 import { MapWithZones } from "./map-with-zones";
@@ -97,6 +96,13 @@ const App = () => {
       <td>false</td>
       <td>Bengaluru</td>
       <td>Сity coordinates</td>
+    </tr>
+    <tr>
+      <td>selectedZones</td>
+      <td>string[]</td>
+      <td>false</td>
+      <td>[]</td>
+      <td> Selected zones ID which will be highlighted on the map</td>
     </tr>
   </tbody>
 </table>
