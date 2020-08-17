@@ -13,7 +13,8 @@
 #### User Mode
 
 -   setting marker on the map
--   setting the radius of the circle and drawing it on the map
+-   setting radius of the circle and drawing it on the map
+-   setting time for point and construction and drawing of isochrones
 -   finding zones that fall within the radius
 
 ### Technologies and libraries used
@@ -22,6 +23,7 @@
 -   Mapbox
 -   Turf
 -   Lodash
+-   Axios
 
 ### Project structure
 

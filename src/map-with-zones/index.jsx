@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import mapboxgl from "mapbox-gl";
 import { UserControll } from "./controls/user-controll";
 import { AdminControll } from "./controls/admin-controll";
@@ -17,16 +18,17 @@ export const Cities = {
  * Map with Zones Component
  *
  * @typedef {object} Props
- * @prop {string} mapToken - Mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
- * @prop {string} mapStyle - Mapbox map style (https://docs.mapbox.com/vector-tiles/reference/)
- * @prop {boolean} isAdmin - Selecting the use mode Admin or User
- * @prop {mapboxgl.LngLat} cityCoor - Сity coordinates
+ * @property {string} mapToken - Mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
+ * @property {string} mapStyle - Mapbox map style (https://docs.mapbox.com/vector-tiles/reference/)
+ * @property {boolean} isAdmin - Selecting the use mode Admin or User
+ * @property {mapboxgl.LngLat} cityCoor - Сity coordinates
+ * @property {Array<string>} selectedZones - Selected zones ID which will be highlighted on the map
  *
  * @extends {React.Component<Props>}
  */
 export class MapWithZones extends React.Component {
     componentDidMount() {
-        const { mapStyle, mapToken, isAdmin, cityCoor } = this.props;
+        const { mapStyle, mapToken, isAdmin, cityCoor, selectedZones } = this.props;
 
         mapboxgl.accessToken = mapToken;
 
@@ -37,7 +39,7 @@ export class MapWithZones extends React.Component {
             zoom: 12,
         });
 
-        this.zoneControll = new ZoneControll();
+        this.zoneControll = new ZoneControll(selectedZones);
         this.map.addControl(this.zoneControll);
         this.userControll = new UserControll(this.zoneControll);
         this.adminControll = new AdminControll(this.zoneControll);
@@ -50,7 +52,7 @@ export class MapWithZones extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { isAdmin } = this.props;
+        const { isAdmin, selectedZones } = this.props;
 
         if (isAdmin !== prevProps.isAdmin) {
             if (!this.map) return;
@@ -61,6 +63,10 @@ export class MapWithZones extends React.Component {
                 this.map.removeControl(this.adminControll);
                 this.map.addControl(this.userControll);
             }
+        }
+
+        if (!_.isEqual(selectedZones, prevProps.selectedZones)) {
+            this.zoneControll.updateSelectedZones(selectedZones);
         }
     }
 
@@ -73,6 +79,7 @@ MapWithZones.defaultProps = {
     mapStyle: "mapbox://styles/mapbox/streets-v11",
     isAdmin: false,
     cityCoor: Cities.Bengaluru,
+    selectedZones: [],
 };
 
 MapWithZones.propTypes = {
@@ -80,4 +87,5 @@ MapWithZones.propTypes = {
     mapStyle: PropTypes.string,
     isAdmin: PropTypes.bool,
     cityCoor: PropTypes.instanceOf(mapboxgl.LngLat),
+    selectedZones: PropTypes.arrayOf(PropTypes.string),
 };

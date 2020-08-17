@@ -2,7 +2,8 @@ export const RadiusModes = {
     time: "time",
     distance: "distance",
 };
-
+export const DEFAULT_ZONE_LAYER_OPACITY = 0.3;
+export const HIGHLIGHTED_ZONE_LAYER_OPACITY = 0.8;
 export const DEFAULT_ZONE_LAYER_COLOR = "#008888";
 export const DEFAULT_RADIUS_LAYER_COLOR = "#292828";
 export const DEFAULT_RADIUS = 1;

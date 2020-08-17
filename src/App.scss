@@ -19,3 +19,22 @@ body {
         color: white;
     }
 }
+
+.test-zone-list {
+    position: absolute;
+    top: 55px;
+    left: 15px;
+    z-index: 1;
+    background-color: white;
+    width: 150px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    padding: 15px;
+
+    & > label {
+        display: block;
+        & > input {
+            margin-right: 10px;
+        }
+    }
+}

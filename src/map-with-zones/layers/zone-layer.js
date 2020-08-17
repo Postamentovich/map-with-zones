@@ -1,5 +1,9 @@
 import { getZonePolygonByCoordinates } from "../utils/zone-helpers";
-import { DEFAULT_ZONE_LAYER_COLOR } from "../utils/constants";
+import {
+    DEFAULT_ZONE_LAYER_COLOR,
+    HIGHLIGHTED_ZONE_LAYER_OPACITY,
+    DEFAULT_ZONE_LAYER_OPACITY,
+} from "../utils/constants";
 import { ZoneStrokeLayer } from "./zone-stroke-layer";
 import { ZoneNameLayer } from "./zone-name-layer";
 import { getZonePolygonPaint } from "../utils/map-helpers";
@@ -36,6 +40,14 @@ export class ZoneLayer {
         this.strokeLayer.setColor(color);
     }
 
+    addHighlight() {
+        this.map.setPaintProperty(this.layerId, "fill-opacity", HIGHLIGHTED_ZONE_LAYER_OPACITY);
+    }
+
+    removeHighlight() {
+        this.map.setPaintProperty(this.layerId, "fill-opacity", DEFAULT_ZONE_LAYER_OPACITY);
+    }
+
     addSource(coordinates) {
         const data = getZonePolygonByCoordinates(coordinates, this.id);
         if (!data) return;
@@ -55,7 +67,6 @@ export class ZoneLayer {
             id: this.layerId,
             source: this.sourceId,
             type: "fill",
-            layout: {},
             paint: getZonePolygonPaint(this.color),
         });
     }

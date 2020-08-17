@@ -3,8 +3,13 @@ import { ZoneLayer } from "../layers/zone-layer";
 
 export class ZoneControll {
     zones = [];
+    selectedZones = [];
     zoneApi = new ZoneApi();
     layers = new Map();
+
+    constructor(selectedZones) {
+        this.selectedZones = selectedZones;
+    }
 
     /**
      * @param {mapboxgl.Map} map
@@ -28,6 +33,11 @@ export class ZoneControll {
         this.zones = zones;
         this.drawZones();
     };
+
+    updateSelectedZones(selectedZones) {
+        this.selectedZones = selectedZones;
+        this.drawZones();
+    }
 
     async deleteZone(zoneId) {
         await this.zoneApi.deleteZone(zoneId);
@@ -91,9 +101,15 @@ export class ZoneControll {
                 existLayer.update(zone.coordinates);
                 existLayer.setColor(zone.color);
                 existLayer.updateName(zone.name);
+                if (this.selectedZones.includes(zone.id)) {
+                    existLayer.addHighlight();
+                } else {
+                    existLayer.removeHighlight();
+                }
             } else {
                 const layer = new ZoneLayer(this.map, zone.id, { color: zone.color, name: zone.name });
                 layer.update(zone.coordinates);
+                if (this.selectedZones.includes(zone.id)) layer.addHighlight();
                 this.layers.set(zone.id, layer);
             }
         });

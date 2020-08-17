@@ -37,8 +37,8 @@ export class UserControll {
 
     onRemove() {
         this.disableUserMode();
-        this.table.parentNode.removeChild(this.table);
-        this.container.parentNode.removeChild(this.container);
+        if (this.table) this.table.parentNode.removeChild(this.table);
+        if (this.container) this.container.parentNode.removeChild(this.container);
         this.data = getDefaultUserData();
         this.itHasPoint = false;
         this.map = undefined;
@@ -48,7 +48,7 @@ export class UserControll {
         if (this.markerLayer) this.markerLayer.remove();
         if (this.radiusLayer) this.radiusLayer.remove();
         if (this.isochroneLayer) this.isochroneLayer.remove();
-        this.map.off("click", this.onMapClick);
+        if (this.map) this.map.off("click", this.onMapClick);
         this.removeUserTable();
     }
 
@@ -57,7 +57,7 @@ export class UserControll {
     }
 
     removeUserTable() {
-        ReactDOM.unmountComponentAtNode(this.table);
+        if (this.table) ReactDOM.unmountComponentAtNode(this.table);
     }
 
     enableUserMode() {

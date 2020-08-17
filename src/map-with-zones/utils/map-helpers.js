@@ -1,4 +1,4 @@
-import { DEFAULT_RADIUS_LAYER_COLOR } from "./constants";
+import { DEFAULT_RADIUS_LAYER_COLOR, DEFAULT_ZONE_LAYER_OPACITY } from "./constants";
 
 export function enableMapInteraction(map) {
     if (!map) return;
@@ -49,7 +49,7 @@ export function getZoneLinePaint(color) {
 export function getZonePolygonPaint(color) {
     return {
         "fill-color": color,
-        "fill-opacity": 0.5,
+        "fill-opacity": DEFAULT_ZONE_LAYER_OPACITY,
         "fill-outline-color": "transparent",
     };
 }
@@ -57,7 +57,7 @@ export function getZonePolygonPaint(color) {
 export function getRadiusPolygonPaint() {
     return {
         "fill-color": DEFAULT_RADIUS_LAYER_COLOR,
-        "fill-opacity": 0.4,
+        "fill-opacity": 0.3,
     };
 }
 
