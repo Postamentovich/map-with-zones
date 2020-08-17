@@ -95,6 +95,7 @@ export class AdminControll {
         enableMapInteraction(this.map);
         resetCursor(this.map);
         this.addCursorPointerListener();
+
     };
 
     /**
@@ -122,7 +123,7 @@ export class AdminControll {
         this.drawEditLayer = new DrawLayer(this.map, this.editZone.id, { color: this.editZone.color });
         this.zoneControll.removeZoneLayer(this.editZone.id);
         this.editZone.coordinates = [];
-        if (this.map) this.map.on("mousedown", this.onMouseDownEdit);
+        if (this.map) this.map.once("mousedown", this.onMouseDownEdit);
     };
 
     cancelEditZone = () => {

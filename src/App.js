@@ -4,7 +4,7 @@ import "./App.scss";
 import { ZonesList } from "./map-with-zones/componets/zones-list";
 
 const App = () => {
-    const [mode, setMode] = useState("highlight");
+    const [mode, setMode] = useState("user");
     const [selectedZones, setSelectedZones] = useState([]);
 
     return (

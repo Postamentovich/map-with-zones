@@ -8,7 +8,7 @@ export const ZonesList = ({ selectedZones, setSelectedZones }) => {
         const zoneApi = new ZoneApi();
         const getZones = async () => {
             const zones = await zoneApi.getZoneList();
-            setZones(zones);
+            if (zones) setZones(zones);
         };
         getZones();
     }, []);
