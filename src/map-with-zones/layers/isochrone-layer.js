@@ -27,11 +27,15 @@ export class IsochroneLayer {
 
     async addSource(time, coor) {
         const source = this.getSource();
-        this.data = await this.mapboxApi.getIsochrone(coor, time);
-        if (source) {
-            source.setData(this.data);
-        } else {
-            this.map.addSource(this.sourceId, { type: "geojson", data: this.data });
+        try {
+            this.data = await this.mapboxApi.getIsochrone(coor, time);
+            if (source) {
+                source.setData(this.data);
+            } else {
+                this.map.addSource(this.sourceId, { type: "geojson", data: this.data });
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -54,6 +58,7 @@ export class IsochroneLayer {
     }
 
     remove() {
+        this.mapboxApi.cancelIsochroneFetch();
         if (this.gerLayer()) this.map.removeLayer(this.layerId);
         if (this.getSource()) this.map.removeSource(this.sourceId);
         this.strokeLayer.remove();
