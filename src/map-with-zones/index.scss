@@ -91,8 +91,39 @@
             margin: 10px 0;
             align-items: center;
 
-            & > input {
+            &__picker {
+                display: flex;
                 margin-left: 15px;
+                position: relative;
+            }
+
+            &__select {
+                width: 36px;
+                height: 14px;
+                border-radius: 2px;
+            }
+
+            &__swatch {
+                padding: 5px;
+                background-color: #fff;
+                border-radius: 1px;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+                display: inline-block;
+                cursor: pointer;
+            }
+
+            &__popover {
+                position: absolute;
+                z-index: 2;
+                top: 30px;
+            }
+
+            &__cover {
+                position: fixed;
+                top: 0px;
+                right: 0px;
+                bottom: 0px;
+                left: 0px;
             }
         }
 

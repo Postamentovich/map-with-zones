@@ -95,7 +95,6 @@ export class AdminControll {
         enableMapInteraction(this.map);
         resetCursor(this.map);
         this.addCursorPointerListener();
-
     };
 
     /**
@@ -139,10 +138,10 @@ export class AdminControll {
         this.editZone = null;
     };
 
-    editZoneColor = (e) => {
-        const color = e.target.value;
-        this.editZone.color = color;
-        this.zoneControll.updateZoneColor(this.editZone.id, color);
+    editZoneColor = (color) => {
+        const hex = color.hex;
+        this.editZone.color = hex;
+        this.zoneControll.updateZoneColor(this.editZone.id, hex);
     };
 
     editZoneName = (e) => {
@@ -227,8 +226,9 @@ export class AdminControll {
         this.newZone.name = e.target.value;
     };
 
-    setNewZoneColor = (e) => {
-        this.newZone.color = e.target.value;
+    setNewZoneColor = (color) => {
+        const hex = color.hex;
+        this.newZone.color = hex;
         this.updateColorInNewZone();
     };
 
