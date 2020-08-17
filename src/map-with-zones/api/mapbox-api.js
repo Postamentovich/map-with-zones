@@ -3,7 +3,6 @@ import axios from "axios";
 
 export class MapboxApi {
     /**
-     *
      * @param {mapboxgl.LngLat} coor
      * @param {number} minutes
      */

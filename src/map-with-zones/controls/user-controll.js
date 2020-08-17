@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { MarkerLayer, MarkerLayerEvents } from "../layers/marker-layer";
 import { RadiusLayer } from "../layers/radius-layer";
-import { getDefaultUserData, isZoneIntersected } from "../utils/zone-helpers";
+import { getDefaultUserData, isZoneIntersectedRadius, isZoneIntersectedTime } from "../utils/zone-helpers";
 import { UserApi } from "../api/user-api";
 import { MAP_ID, RadiusModes } from "../utils/constants";
 import { ZoneTable } from "../componets/zone-table";
@@ -76,13 +76,11 @@ export class UserControll {
     onTimeChanged = ({ time }) => {
         this.data.time = time;
         this.updateRadiusLayer();
-        this.findZonesInRadius();
     };
 
     onModeChanged = ({ mode }) => {
         this.data.mode = mode;
         this.updateRadiusLayer();
-        this.findZonesInRadius();
     };
 
     onButtonClick = async () => {
@@ -92,46 +90,56 @@ export class UserControll {
     onRadiusChanged = ({ radius }) => {
         this.data.radius = radius;
         this.updateRadiusLayer();
-        this.findZonesInRadius();
     };
 
     onDragEndMarker = ({ lngLat }) => {
         this.data.lngLat = lngLat;
         this.updateRadiusLayer();
-        this.findZonesInRadius();
     };
 
     findZonesInRadius() {
-        if (!this.data.lngLat || !this.data.radius) {
+        const isTimeMode = this.data.mode === RadiusModes.time;
+        const isDistanceMode = this.data.mode === RadiusModes.distance;
+        const hasRadius = isDistanceMode && this.data.radius > 0;
+        const hasTime = isTimeMode && this.data.time > 0;
+
+        if (!this.data.lngLat || (!hasRadius && !hasTime)) {
             this.data.zones = [];
             this.updateUserTable();
             return;
         }
+
         const zones = this.zoneControll.getZoneList();
-        const intersectedZones = zones.filter((zone) =>
-            isZoneIntersected(this.data.radius, this.data.lngLat, zone.coordinates),
-        );
+        const polygonData = this.isochroneLayer.getFeatureCollection();
+
+        const intersectedZones = zones.filter((zone) => {
+            if (isDistanceMode) return isZoneIntersectedRadius(this.data.radius, this.data.lngLat, zone.coordinates);
+            return isZoneIntersectedTime(polygonData, zone.coordinates);
+        });
+
         this.data.zones = intersectedZones.map((el) => ({ name: el.name, id: el.id }));
+
         this.updateUserTable();
     }
 
-    updateRadiusLayer() {
+    async updateRadiusLayer() {
         if (!this.data.lngLat) return;
 
         if (this.data.mode === RadiusModes.time) {
             if (this.radiusLayer) this.radiusLayer.remove();
-            this.isochroneLayer.update(this.data.time, this.data.lngLat);
+            await this.isochroneLayer.update(this.data.time, this.data.lngLat);
         } else {
             if (this.isochroneLayer) this.isochroneLayer.remove();
             this.radiusLayer.update(this.data.radius, this.data.lngLat);
         }
+
+        this.findZonesInRadius();
     }
 
     onMapClick = (e) => {
         this.markerLayer.init(e.lngLat, this.data);
         this.data.lngLat = e.lngLat;
         this.itHasPoint = true;
-        this.findZonesInRadius();
         this.updateRadiusLayer();
         this.updateUserTable();
     };

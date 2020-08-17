@@ -74,15 +74,24 @@ export function getLineByRadius(center, radius) {
     return turf.polygonToLine(circle);
 }
 
-export function isZoneIntersected(radius, center, coordinates) {
-    if (coordinates.length < 2) return;
-    const line = turf.lineString(coordinates);
+export function getLineByPolygonData(polygonData) {
+    const coords = turf.coordAll(polygonData);
+    return turf.lineString(coords);
+}
+
+export function isZoneIntersectedRadius(radius, center, zoneCoordinates) {
+    if (zoneCoordinates.length < 2) return;
+    const line = turf.lineString(zoneCoordinates);
     const point = turf.point(center.toArray());
     const distance = turf.pointToLineDistance(point, line);
     return distance <= radius;
 }
 
-export function getLineByPolygonData(polygonData) {
-    const coords = turf.coordAll(polygonData);
-    return turf.lineString(coords);
+export function isZoneIntersectedTime(timePolygon, zoneCoordinates) {
+    if (!timePolygon || !zoneCoordinates) return;
+    const zoneLine = getZoneLineByCoordinates(zoneCoordinates);
+    const timeLine = getLineByPolygonData(timePolygon);
+    const points = turf.lineIntersect(zoneLine, timeLine);
+    const intersectedPoints = points && points.features.length;
+    return !!intersectedPoints;
 }
