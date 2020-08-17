@@ -7,6 +7,8 @@ export const MarkerLayerEvents = {
     dragend: "dragend",
     radiusChanged: "radiusChanged",
     buttonClick: "buttonClick",
+    modeChanged: "modeChanged",
+    timeChanged: "timeChanged",
 };
 
 export class MarkerLayer extends mapboxgl.Evented {
@@ -14,7 +16,6 @@ export class MarkerLayer extends mapboxgl.Evented {
     radiusButtonId = "marker-button-radius";
 
     /**
-     *
      * @param {mapboxgl.Map} map
      */
     constructor(map) {
@@ -39,19 +40,35 @@ export class MarkerLayer extends mapboxgl.Evented {
     /**
      * @param {mapboxgl.LngLat} coor
      */
-    update(coor) {
+    init(coor, initData) {
         this.marker.setLngLat(coor.toArray());
         this.marker.setPopup(this.popup);
         this.marker.addTo(this.map);
         this.marker.togglePopup();
         this.marker.on("dragend", this.onDragEnd);
         ReactDOM.render(
-            <RadiusPopup radius={1} onChangeRadius={this.onInputChange} onClickSelect={this.onButtonClick} />,
+            <RadiusPopup
+                radius={initData.radius}
+                time={initData.time}
+                mode={initData.mode}
+                onChangeRadius={this.onRadiusChange}
+                onClickSelect={this.onButtonClick}
+                onChangeMode={this.onChangeMode}
+                onChangeTime={this.onTimeChange}
+            />,
             this.popupContainer,
         );
     }
 
-    onInputChange = (e) => {
+    onChangeMode = (e) => {
+        this.fire(MarkerLayerEvents.modeChanged, { mode: e.target.value });
+    };
+
+    onTimeChange = (e) => {
+        this.fire(MarkerLayerEvents.timeChanged, { time: Number(e.target.value) });
+    };
+
+    onRadiusChange = (e) => {
         this.fire(MarkerLayerEvents.radiusChanged, { radius: Number(e.target.value) });
     };
 

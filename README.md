@@ -16,7 +16,7 @@
 -   setting the radius of the circle and drawing it on the map
 -   finding zones that fall within the radius
 
-### Used technologies and library
+### Technologies and libraries used
 
 -   React
 -   Mapbox
@@ -28,7 +28,6 @@
 ```
 └── map-with-zones/                 # Main folder
     ├── api/                        # Services for API interactions
-    ├── components/                 # React components
     ├── components/                 # React components
     ├── controls/                   # Mapbox controls
     ├── layers/                     # Mapbox layers

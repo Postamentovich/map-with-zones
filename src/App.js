@@ -3,7 +3,7 @@ import { MapWithZones } from "./map-with-zones";
 import "./App.scss";
 
 const App = () => {
-    const [isAdmin, setIsAdmin] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     return (
         <div className="App">

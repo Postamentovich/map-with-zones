@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import { DEFAULT_ZONE_LAYER_COLOR } from "./constants";
+import { DEFAULT_ZONE_LAYER_COLOR, DEFAULT_RADIUS, DEFAULT_TIME, DEFAULT_MODE } from "./constants";
 
 export function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -17,7 +17,9 @@ export function getDefaultZone() {
 export function getDefaultUserData() {
     return {
         lngLat: null,
-        radius: 1,
+        radius: DEFAULT_RADIUS,
+        time: DEFAULT_TIME,
+        mode: DEFAULT_MODE,
         zones: [],
     };
 }
@@ -78,4 +80,9 @@ export function isZoneIntersected(radius, center, coordinates) {
     const point = turf.point(center.toArray());
     const distance = turf.pointToLineDistance(point, line);
     return distance <= radius;
+}
+
+export function getLineByPolygonData(polygonData) {
+    const coords = turf.coordAll(polygonData);
+    return turf.lineString(coords);
 }

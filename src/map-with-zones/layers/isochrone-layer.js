@@ -1,37 +1,42 @@
-import { getCircleByRadius } from "../utils/zone-helpers";
 import { DEFAULT_RADIUS_LAYER_COLOR } from "../utils/constants";
-import { RadiusStrokeLayer } from "./radius-stroke-layer";
+import { MapboxApi } from "../api/mapbox-api";
+import { IsochroneStrokeLayer } from "./isochrone-stroke-layer";
 
-export class RadiusLayer {
-    layerId = "radius-layer";
-    sourceId = "radius-source";
+export class IsochroneLayer {
+    layerId = "isochrone-layer";
+    sourceId = "isochrone-source";
 
     /**
      * @param {mapboxgl.Map} map
      */
     constructor(map) {
         this.map = map;
-        this.strokeLayer = new RadiusStrokeLayer(map);
+        this.strokeLayer = new IsochroneStrokeLayer(map);
+        this.mapboxApi = new MapboxApi();
     }
 
-    update(radius, coor) {
-        if (radius > 0) {
-            this.addSource(radius, coor);
+    async update(time, coor) {
+        if (time > 0) {
+            await this.addSource(time, coor);
             this.addLayer();
-            this.strokeLayer.update(radius, coor);
+            this.strokeLayer.update(this.data);
         } else {
             this.remove();
         }
     }
 
-    addSource(radius, coor) {
+    async addSource(time, coor) {
         const source = this.getSource();
-        const data = getCircleByRadius(coor, radius);
+        this.data = await this.mapboxApi.getIsochrone(coor, time);
         if (source) {
-            source.setData(data);
+            source.setData(this.data);
         } else {
-            this.map.addSource(this.sourceId, { type: "geojson", data });
+            this.map.addSource(this.sourceId, { type: "geojson", data: this.data });
         }
+    }
+
+    getFeatureCollection() {
+        return this.data;
     }
 
     addLayer() {
