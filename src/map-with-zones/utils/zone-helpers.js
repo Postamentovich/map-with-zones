@@ -87,7 +87,7 @@ export function isZoneIntersectedRadius(radius, center, zoneCoordinates) {
     return distance <= radius;
 }
 
-export function isZoneIntersectedTime(timePolygon, zoneCoordinates, center) {
+export function isZoneIntersectedTime(timePolygon, zoneCoordinates) {
     if (!timePolygon || !zoneCoordinates) return;
     const polygon = getZonePolygonByCoordinates(zoneCoordinates);
     const timeFeature = timePolygon.features[0];
