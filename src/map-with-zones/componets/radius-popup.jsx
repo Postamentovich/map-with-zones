@@ -23,10 +23,18 @@ export const RadiusPopup = ({ radius, onChangeRadius, onClickSelect, onChangeMod
         },
         [onChangeRadius],
     );
+    const [stateTime, setTime] = useState(time);
+    const handleChangeTime = useCallback(
+        (e) => {
+            setTime(e.target.value);
+            onChangeTime(e);
+        },
+        [onChangeTime],
+    );
     return (
         <Popup>
             <RadiusMode mode={stateMode} onChangeMode={handleChangeMode} />
-            {stateMode === RadiusModes.time && <InputTime time={time} onChange={onChangeTime} />}
+            {stateMode === RadiusModes.time && <InputTime time={stateTime} onChange={handleChangeTime} />}
             {stateMode === RadiusModes.distance && <InputRadius radius={stateRadius} onChange={handleChangeRadius} />}
             <div className={POPUP_CONTROLS_CLASS_NAME}>
                 <PopupButton text="Select" onClick={onClickSelect} />
