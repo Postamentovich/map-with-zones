@@ -1,43 +1,60 @@
-import { delay } from "../utils/api-helpers";
+import localForage from "localforage";
 
 export class ZoneApi {
     localStoragekey = "mapZones";
 
+    constructor() {
+        localForage.config({
+            driver: localForage.INDEXEDDB,
+            name: "mapZones",
+            version: 1.0,
+            storeName: this.localStoragekey,
+        });
+    }
+
     async getZoneList() {
-        await delay();
-        const zones = localStorage.getItem(this.localStoragekey);
-        if (!zones) return;
-        return JSON.parse(zones);
+        try {
+            const zones = await localForage.getItem(this.localStoragekey);
+            return zones;
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async addZone(zone) {
-        await delay();
-        let newZones = [];
-        const zones = await this.getZoneList();
-        if (zones) newZones = [...zones];
-        newZones.push(zone);
-        const string = JSON.stringify(newZones);
-        localStorage.setItem(this.localStoragekey, string);
+        try {
+            let newZones = [];
+            const zones = await this.getZoneList();
+            if (zones) newZones = [...zones];
+            newZones.push(zone);
+            await localForage.setItem(this.localStoragekey, newZones);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async updateZone(zone) {
-        await delay();
-        const zones = await this.getZoneList();
-        if (!zones) return;
-        const newZones = zones.map((el) => {
-            if (el.id === zone.id) return zone;
-            return el;
-        });
-        const string = JSON.stringify(newZones);
-        localStorage.setItem(this.localStoragekey, string);
+        try {
+            const zones = await this.getZoneList();
+            if (!zones) return;
+            const newZones = zones.map((el) => {
+                if (el.id === zone.id) return zone;
+                return el;
+            });
+            await localForage.setItem(this.localStoragekey, newZones);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async deleteZone(id) {
-        await delay();
-        const zones = await this.getZoneList();
-        if (!zones) return;
-        const newZones = zones.filter((el) => el.id !== id);
-        const string = JSON.stringify(newZones);
-        localStorage.setItem(this.localStoragekey, string);
+        try {
+            const zones = await this.getZoneList();
+            if (!zones) return;
+            const newZones = zones.filter((el) => el.id !== id);
+            await localForage.setItem(this.localStoragekey, newZones);
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
