@@ -17,6 +17,7 @@ export class AdminControll {
     isCreateMode = false;
     isEditMode = false;
     isDeleteMode = false;
+    isEditGeometryMode = false;
     deleteZoneId = null;
     editZoneId = null;
     cacheZone = null;
@@ -75,6 +76,7 @@ export class AdminControll {
         this.cancelEditZone();
         this.editZone = null;
         this.isEditMode = false;
+        this.isEditGeometryMode = false;
     };
 
     updateEditZoneLayer() {
@@ -92,6 +94,7 @@ export class AdminControll {
         if (this.editZone && this.editZone.coordinates.length > 4) {
             this.zoneControll.updateZoneCoordinates(this.editZone.id, this.editZone.coordinates);
         }
+        this.isEditGeometryMode = false;
         enableMapInteraction(this.map);
         resetCursor(this.map);
         this.addCursorPointerListener();
@@ -115,6 +118,7 @@ export class AdminControll {
     };
 
     onGeometryEdit = () => {
+        this.isEditGeometryMode = true;
         if (this.editPopup) this.editPopup.remove();
         disableMapInteraction(this.map);
         this.removeCursorPointerListener();
@@ -125,15 +129,8 @@ export class AdminControll {
         if (this.map) this.map.once("mousedown", this.onMouseDownEdit);
     };
 
-    cancelEditZone = () => {
-        this.zoneControll.drawZones();
-        if (this.editPopup) this.editPopup.remove();
-        this.editZone = null;
-    };
-
     onSaveEdit = async () => {
         await this.zoneControll.updateZone(this.editZone);
-
         if (this.editPopup) this.editPopup.remove();
         this.editZone = null;
     };
@@ -148,6 +145,15 @@ export class AdminControll {
         this.editZone.name = e.target.value;
     };
 
+    cancelEditZone = () => {
+        if (this.editPopup) this.editPopup.remove();
+    };
+
+    onClosePopup = () => {
+        this.zoneControll.drawZones();
+        if (!this.isEditGeometryMode) this.editZone = null;
+    };
+
     showEditPopup() {
         const coor = getCenterZoneCoorByCoordinates(this.editZone.coordinates);
         if (!coor) return;
@@ -155,13 +161,15 @@ export class AdminControll {
         const popupContainer = document.createElement("div");
 
         this.editPopup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false,
+            closeButton: true,
+            closeOnClick: true,
             closeOnMove: false,
         })
             .setLngLat(coor)
             .setDOMContent(popupContainer)
             .addTo(this.map);
+
+        this.editPopup.on("close", () => this.onClosePopup());
 
         ReactDOM.render(
             <EditPopup
@@ -182,7 +190,7 @@ export class AdminControll {
         if (!feature) return;
         const zoneId = feature.properties.id;
         if (this.editZone && zoneId === this.editZone.id) return;
-        if (this.editPopup) this.editPopup.remove();
+        // if (this.editPopup) this.editPopup.remove();
         const zone = this.zoneControll.getZoneById(zoneId);
         this.editZone = _.cloneDeep(zone);
         this.showEditPopup();
@@ -211,9 +219,9 @@ export class AdminControll {
         this.isCreateMode = true;
     }
 
-    disableCreateMode = () => {
+    disableCreateMode = (isAutoClose = false) => {
         this.newZone = getDefaultZone();
-        if (this.createPopup) this.createPopup.remove();
+        if (this.createPopup && !isAutoClose) this.createPopup.remove();
         if (this.newZonelayer) this.newZonelayer.remove();
         if (this.drawlayer) this.drawlayer.remove();
         removeActiveClassForButton(this.createButton);
@@ -251,14 +259,14 @@ export class AdminControll {
         if (!coor) return;
         const popupContainer = document.createElement("div");
         this.createPopup = new mapboxgl.Popup({
-            closeButton: false,
+            closeButton: true,
             closeOnClick: false,
             closeOnMove: false,
         })
             .setLngLat(coor)
             .setDOMContent(popupContainer)
             .addTo(this.map);
-
+        this.createPopup.on("close", () => this.disableCreateMode(true));
         const name = this.zoneControll.getNewZoneName();
         this.newZone.name = name;
         ReactDOM.render(
@@ -267,7 +275,7 @@ export class AdminControll {
                 color={null}
                 onChangeName={this.setNewZoneName}
                 onChangeColor={this.setNewZoneColor}
-                onClickCancel={this.disableCreateMode}
+                onClickCancel={() => this.disableCreateMode()}
                 onClickSave={this.createZone}
             />,
             popupContainer,
@@ -328,9 +336,12 @@ export class AdminControll {
         this.deleteZoneId = null;
     }
 
-    cancelDeleteZone = () => {
-        this.deletePopup.remove();
+    onDeletePopupClose = () => {
         this.deleteZoneId = null;
+    };
+
+    cancelDeleteZone = () => {
+        if (this.deletePopup) this.deletePopup.remove();
     };
 
     deleteZone = async () => {
@@ -346,13 +357,15 @@ export class AdminControll {
         if (!coor) return;
         const popupContainer = document.createElement("div");
         this.deletePopup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false,
+            closeButton: true,
+            closeOnClick: true,
             closeOnMove: false,
         })
             .setLngLat(coor)
             .setDOMContent(popupContainer)
             .addTo(this.map);
+
+        this.deletePopup.on("close", this.onDeletePopupClose);
 
         ReactDOM.render(
             <DeletePopup name={zone.name} onClickCancel={this.cancelDeleteZone} onClickDelete={this.deleteZone} />,

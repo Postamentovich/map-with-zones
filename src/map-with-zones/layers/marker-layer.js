@@ -27,7 +27,7 @@ export class MarkerLayer extends mapboxgl.Evented {
         });
 
         this.popupContainer = document.createElement("div");
-        this.popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, closeOnMove: false }).setDOMContent(
+        this.popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, closeOnMove: false }).setDOMContent(
             this.popupContainer,
         );
     }
