@@ -49,7 +49,8 @@
 
 ### <a name="integration">Integration in project</a>
 
-The main component in folder `src/map-with-zones` you need to copy this folder to your project, and install the required dependencies;
+The main component in folder `src/map-with-zones` you need to copy this folder to your project.
+After install the required dependencies: <br>
 `npm i axios localforage lodash mapbox-gl @turf/turf`
 
 Example of usage: <br> To use you need a mapbox token (https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
