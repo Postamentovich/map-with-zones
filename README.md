@@ -1,6 +1,15 @@
-## Map with Zones
+## Map with drawing Zones
 
-### Features:
+## https://map-with-drawing-zones.web.app/
+
+1. [Features](#features)
+1. [Technologies and libraries used](#technology)
+1. [Project structure](#structure)
+1. [Integration in project](#integration)
+1. [MapWithZones API](#api)
+1. [Models](#models)
+
+### <a name="features">Features</a>
 
 #### Admin Mode
 
@@ -17,7 +26,7 @@
 -   setting time for point and construction and drawing of isochrones
 -   finding zones that fall within the radius
 
-### Technologies and libraries used
+### <a name="technology">Technologies and libraries used</a>
 
 -   React
 -   Mapbox
@@ -25,7 +34,7 @@
 -   Lodash
 -   Axios
 
-### Project structure
+### <a name="structure">Project structure</a>
 
 ```
 └── map-with-zones/                 # Main folder
@@ -38,7 +47,7 @@
     index.scss                      # Styles css
 ```
 
-### Integration in project
+### <a name="integration">Integration in project</a>
 
 The main component in folder `src/map-with-zones`;
 
@@ -56,7 +65,7 @@ const App = () => {
 };
 ```
 
-### MapWithZones API:
+### <a name="api">MapWithZones API</a>
 
 <table class="table table-bordered table-striped">
   <thead>
@@ -107,7 +116,7 @@ const App = () => {
   </tbody>
 </table>
 
-### Used models
+### <a name="models">Used models</a>
 
 Now the saving of zones is implemented not through API, but through local storage. After building the API for storing zones, it will be necessary to change the methods in the ZoneApi class `src/map-with-zones/api/zone-api.js`
 
